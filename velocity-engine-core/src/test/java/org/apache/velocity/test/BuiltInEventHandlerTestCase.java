@@ -1,23 +1,23 @@
 package org.apache.velocity.test;
 
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for additional information regarding
+ * copyright ownership. The ASF licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -26,9 +26,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -43,6 +40,8 @@ import org.apache.velocity.app.event.implement.InvalidReferenceInfo;
 import org.apache.velocity.app.event.implement.ReportInvalidReferences;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests the operation of the built in event handlers.
@@ -50,65 +49,56 @@ import org.apache.velocity.runtime.RuntimeConstants;
  * @author <a href="mailto:wglass@forio.com">Will Glass-Husain</a>
  * @version $Id$
  */
-public class BuiltInEventHandlerTestCase extends BaseTestCase {
+public class BuiltInEventHandlerTestCase
+    extends AbstractBaseTest
+{
 
     protected boolean DEBUG = false;
 
     /**
     * VTL file extension.
     */
-   private static final String TMPL_FILE_EXT = "vm";
-
-   /**
-    * Comparison file extension.
-    */
-   private static final String CMP_FILE_EXT = "cmp";
-
-   /**
-    * Comparison file extension.
-    */
-   private static final String RESULT_FILE_EXT = "res";
-
-   /**
-    * Path for templates. This property will override the
-    * value in the default velocity properties file.
-    */
-   private final static String FILE_RESOURCE_LOADER_PATH = TEST_COMPARE_DIR + "/includeevent";
-
-   /**
-    * Results relative to the build directory.
-    */
-   private static final String RESULTS_DIR = TEST_RESULT_DIR + "/includeevent";
-
-   /**
-    * Results relative to the build directory.
-    */
-   private static final String COMPARE_DIR = TEST_COMPARE_DIR + "/includeevent/compare";
+    private static final String TMPL_FILE_EXT = "vm";
 
     /**
-     * Default constructor.
+     * Comparison file extension.
      */
-    public BuiltInEventHandlerTestCase(String name)
+    private static final String CMP_FILE_EXT = "cmp";
+
+    /**
+     * Comparison file extension.
+     */
+    private static final String RESULT_FILE_EXT = "res";
+
+    /**
+     * Path for templates. This property will override the
+     * value in the default velocity properties file.
+     */
+    private final static String FILE_RESOURCE_LOADER_PATH = TEST_COMPARE_DIR + "/includeevent";
+
+    /**
+     * Results relative to the build directory.
+     */
+    private static final String RESULTS_DIR = TEST_RESULT_DIR + "/includeevent";
+
+    /**
+     * Results relative to the build directory.
+     */
+    private static final String COMPARE_DIR = TEST_COMPARE_DIR + "/includeevent/compare";
+
+    @Before
+    public void setUp()
+        throws Exception
     {
-        super(name);
+        assureResultsDirectoryExists( RESULTS_DIR );
+        super.before();
     }
 
-    public void setUp() throws Exception
+    protected void log( String out )
     {
-        assureResultsDirectoryExists(RESULTS_DIR);
-        super.setUp();
-    }
-
-    public static Test suite()
-    {
-       return new TestSuite(BuiltInEventHandlerTestCase.class);
-    }
-
-    protected void log(String out)
-    {
-        if (DEBUG)
+        if ( DEBUG )
         {
-            System.out.println (out);
+            System.out.println( out );
         }
     }
 
@@ -116,7 +106,9 @@ public class BuiltInEventHandlerTestCase extends BaseTestCase {
      * Test reporting of invalid syntax
      * @throws Exception
      */
-    public void testReportInvalidReferences1() throws Exception
+    @Test
+    public void testReportInvalidReferences1()
+        throws Exception
     {
         VelocityEngine ve = new VelocityEngine();
         ReportInvalidReferences reporter = new ReportInvalidReferences();
@@ -124,48 +116,53 @@ public class BuiltInEventHandlerTestCase extends BaseTestCase {
 
         VelocityContext context = new VelocityContext();
         EventCartridge ec = new EventCartridge();
-        ec.addEventHandler(reporter);
-        ec.attachToContext(context);
+        ec.addEventHandler( reporter );
+        ec.attachToContext( context );
 
-        context.put("a1","test");
-        context.put("b1","test");
+        context.put( "a1", "test" );
+        context.put( "b1", "test" );
         Writer writer = new StringWriter();
 
-        ve.evaluate(context,writer,"test","$a1 $c1 $a1.length() $a1.foobar()");
+        ve.evaluate( context, writer, "test", "$a1 $c1 $a1.length() $a1.foobar()" );
 
         List errors = reporter.getInvalidReferences();
-        assertEquals(2,errors.size());
-        assertEquals("$c1",((InvalidReferenceInfo) errors.get(0)).getInvalidReference());
-        assertEquals("$a1.foobar()",((InvalidReferenceInfo) errors.get(1)).getInvalidReference());
+        assertEquals( 2, errors.size() );
+        assertEquals( "$c1", ( (InvalidReferenceInfo) errors.get( 0 ) ).getInvalidReference() );
+        assertEquals( "$a1.foobar()", ( (InvalidReferenceInfo) errors.get( 1 ) ).getInvalidReference() );
 
-        log("Caught invalid references (local configuration).");
+        log( "Caught invalid references (local configuration)." );
     }
 
-    public void testReportInvalidReferences2() throws Exception
+    @Test
+    public void testReportInvalidReferences2()
+        throws Exception
     {
         VelocityEngine ve = new VelocityEngine();
-        ve.setProperty("eventhandler.invalidreference.exception","true");
+        ve.setProperty( "eventhandler.invalidreference.exception", "true" );
         ReportInvalidReferences reporter = new ReportInvalidReferences();
         ve.init();
 
         VelocityContext context = new VelocityContext();
         EventCartridge ec = new EventCartridge();
-        ec.addEventHandler(reporter);
-        ec.attachToContext(context);
+        ec.addEventHandler( reporter );
+        ec.attachToContext( context );
 
-        context.put("a1","test");
-        context.put("b1","test");
+        context.put( "a1", "test" );
+        context.put( "b1", "test" );
         Writer writer = new StringWriter();
 
-        ve.evaluate(context,writer,"test","$a1 no problem");
+        ve.evaluate( context, writer, "test", "$a1 no problem" );
 
-        try {
-            ve.evaluate(context,writer,"test","$a1 $c1 $a1.length() $a1.foobar()");
-            fail ("Expected exception.");
-        } catch (RuntimeException E) {}
+        try
+        {
+            ve.evaluate( context, writer, "test", "$a1 $c1 $a1.length() $a1.foobar()" );
+            fail( "Expected exception." );
+        }
+        catch ( RuntimeException E )
+        {
+        }
 
-
-        log("Caught invalid references (global configuration).");
+        log( "Caught invalid references (global configuration)." );
 
     }
 
@@ -173,14 +170,17 @@ public class BuiltInEventHandlerTestCase extends BaseTestCase {
      * Test escaping
      * @throws Exception
      */
-    public void testEscapeHtml() throws Exception
+    @Test
+    public void testEscapeHtml()
+        throws Exception
     {
         EscapeReference esc = new EscapeHtmlReference();
-        assertEquals("test string&amp;another&lt;b&gt;bold&lt;/b&gt;test",esc.referenceInsert("","test string&another<b>bold</b>test"));
-        assertEquals("&lt;&quot;&gt;",esc.referenceInsert("","<\">"));
-        assertEquals("test string",esc.referenceInsert("","test string"));
+        assertEquals( "test string&amp;another&lt;b&gt;bold&lt;/b&gt;test",
+                      esc.referenceInsert( "", "test string&another<b>bold</b>test" ) );
+        assertEquals( "&lt;&quot;&gt;", esc.referenceInsert( "", "<\">" ) );
+        assertEquals( "test string", esc.referenceInsert( "", "test string" ) );
 
-        log("Correctly escaped HTML");
+        log( "Correctly escaped HTML" );
 
     }
 
@@ -188,15 +188,18 @@ public class BuiltInEventHandlerTestCase extends BaseTestCase {
      * Test escaping
      * @throws Exception
      */
-    public void testEscapeXml() throws Exception
+    @Test
+    public void testEscapeXml()
+        throws Exception
     {
         EscapeReference esc = new EscapeXmlReference();
-        assertEquals("test string&amp;another&lt;b&gt;bold&lt;/b&gt;test",esc.referenceInsert("","test string&another<b>bold</b>test"));
-        assertEquals("&lt;&quot;&gt;",esc.referenceInsert("","<\">"));
-        assertEquals("&apos;",esc.referenceInsert("","'"));
-        assertEquals("test string",esc.referenceInsert("","test string"));
+        assertEquals( "test string&amp;another&lt;b&gt;bold&lt;/b&gt;test",
+                      esc.referenceInsert( "", "test string&another<b>bold</b>test" ) );
+        assertEquals( "&lt;&quot;&gt;", esc.referenceInsert( "", "<\">" ) );
+        assertEquals( "&apos;", esc.referenceInsert( "", "'" ) );
+        assertEquals( "test string", esc.referenceInsert( "", "test string" ) );
 
-        log("Correctly escaped XML");
+        log( "Correctly escaped XML" );
 
     }
 
@@ -204,13 +207,15 @@ public class BuiltInEventHandlerTestCase extends BaseTestCase {
      * Test escaping
      * @throws Exception
      */
-    public void testEscapeSql() throws Exception
+    @Test
+    public void testEscapeSql()
+        throws Exception
     {
         EscapeReference esc = new EscapeSqlReference();
-        assertEquals("Jimmy''s Pizza",esc.referenceInsert("","Jimmy's Pizza"));
-        assertEquals("test string",esc.referenceInsert("","test string"));
+        assertEquals( "Jimmy''s Pizza", esc.referenceInsert( "", "Jimmy's Pizza" ) );
+        assertEquals( "test string", esc.referenceInsert( "", "test string" ) );
 
-        log("Correctly escaped SQL");
+        log( "Correctly escaped SQL" );
 
     }
 
@@ -218,24 +223,28 @@ public class BuiltInEventHandlerTestCase extends BaseTestCase {
      * Test escaping
      * @throws Exception
      */
-    public void testEscapeJavaScript() throws Exception
+    @Test
+    public void testEscapeJavaScript()
+        throws Exception
     {
         EscapeReference esc = new EscapeJavaScriptReference();
-        assertEquals("Jimmy\\'s Pizza",esc.referenceInsert("","Jimmy's Pizza"));
-        assertEquals("test string",esc.referenceInsert("","test string"));
+        assertEquals( "Jimmy\\'s Pizza", esc.referenceInsert( "", "Jimmy's Pizza" ) );
+        assertEquals( "test string", esc.referenceInsert( "", "test string" ) );
 
-
-        log("Correctly escaped Javascript");
+        log( "Correctly escaped Javascript" );
     }
 
     /**
      * test that escape reference handler works with no match restrictions
      * @throws Exception
      */
-    public void testEscapeReferenceMatchAll() throws Exception
+    @Test
+    public void testEscapeReferenceMatchAll()
+        throws Exception
     {
         VelocityEngine ve = new VelocityEngine();
-        ve.setProperty(RuntimeConstants.EVENTHANDLER_REFERENCEINSERTION, "org.apache.velocity.app.event.implement.EscapeHtmlReference");
+        ve.setProperty( RuntimeConstants.EVENTHANDLER_REFERENCEINSERTION,
+                        "org.apache.velocity.app.event.implement.EscapeHtmlReference" );
         ve.init();
 
         Context context;
@@ -244,18 +253,18 @@ public class BuiltInEventHandlerTestCase extends BaseTestCase {
         // test normal reference
         context = new VelocityContext();
         writer = new StringWriter();
-        context.put("bold","<b>");
-        ve.evaluate(context,writer,"test","$bold test & test");
-        assertEquals("&lt;b&gt; test & test",writer.toString());
+        context.put( "bold", "<b>" );
+        ve.evaluate( context, writer, "test", "$bold test & test" );
+        assertEquals( "&lt;b&gt; test & test", writer.toString() );
 
         // test method reference
         context = new VelocityContext();
         writer = new StringWriter();
-        context.put("bold","<b>");
-        ve.evaluate(context,writer,"test","$bold.substring(0,1)");
-        assertEquals("&lt;",writer.toString());
+        context.put( "bold", "<b>" );
+        ve.evaluate( context, writer, "test", "$bold.substring(0,1)" );
+        assertEquals( "&lt;", writer.toString() );
 
-        log("Escape matched all references (global configuration)");
+        log( "Escape matched all references (global configuration)" );
 
     }
 
@@ -263,20 +272,23 @@ public class BuiltInEventHandlerTestCase extends BaseTestCase {
      * test that escape reference handler works with match restrictions
      * @throws Exception
      */
-    public void testEscapeReferenceMatch() throws Exception
+    @Test
+    public void testEscapeReferenceMatch()
+        throws Exception
     {
         // set up HTML match on everything, JavaScript match on _js*
         VelocityEngine ve = new VelocityEngine();
-        ve.setProperty(RuntimeConstants.EVENTHANDLER_REFERENCEINSERTION, "org.apache.velocity.app.event.implement.EscapeHtmlReference,org.apache.velocity.app.event.implement.EscapeJavaScriptReference");
-        ve.setProperty("eventhandler.escape.javascript.match", "/.*_js.*/");
+        ve.setProperty( RuntimeConstants.EVENTHANDLER_REFERENCEINSERTION,
+                        "org.apache.velocity.app.event.implement.EscapeHtmlReference,org.apache.velocity.app.event.implement.EscapeJavaScriptReference" );
+        ve.setProperty( "eventhandler.escape.javascript.match", "/.*_js.*/" );
         ve.init();
 
         Writer writer;
 
         // Html no JavaScript
         writer = new StringWriter();
-        ve.evaluate(newEscapeContext(),writer,"test","$test1");
-        assertEquals("Jimmy's &lt;b&gt;pizza&lt;/b&gt;",writer.toString());
+        ve.evaluate( newEscapeContext(), writer, "test", "$test1" );
+        assertEquals( "Jimmy's &lt;b&gt;pizza&lt;/b&gt;", writer.toString() );
 
         // comment out bad test -- requires latest commons-lang
         /**
@@ -297,73 +309,79 @@ public class BuiltInEventHandlerTestCase extends BaseTestCase {
         assertEquals("Jimmy\\'s",writer.toString());
 
         **/
-        
-        log("Escape selected references (global configuration)");
 
-        
+        log( "Escape selected references (global configuration)" );
 
     }
 
     private Context newEscapeContext()
     {
         Context context = new VelocityContext();
-        context.put("test1","Jimmy's <b>pizza</b>");
-        context.put("test1_js","Jimmy's <b>pizza</b>");
-        context.put("test1_js_test","Jimmy's <b>pizza</b>");
+        context.put( "test1", "Jimmy's <b>pizza</b>" );
+        context.put( "test1_js", "Jimmy's <b>pizza</b>" );
+        context.put( "test1_js_test", "Jimmy's <b>pizza</b>" );
         return context;
     }
 
-    public void testPrintExceptionHandler() throws Exception
+    @Test
+    public void testPrintExceptionHandler()
+        throws Exception
     {
         VelocityEngine ve1 = new VelocityEngine();
-        ve1.setProperty(RuntimeConstants.EVENTHANDLER_METHODEXCEPTION, "org.apache.velocity.app.event.implement.PrintExceptions");
+        ve1.setProperty( RuntimeConstants.EVENTHANDLER_METHODEXCEPTION,
+                         "org.apache.velocity.app.event.implement.PrintExceptions" );
         ve1.init();
 
         VelocityEngine ve2 = new VelocityEngine();
-        ve2.setProperty(RuntimeConstants.EVENTHANDLER_METHODEXCEPTION, "org.apache.velocity.app.event.implement.PrintExceptions");
-        ve2.setProperty("eventhandler.methodexception.message","true");
+        ve2.setProperty( RuntimeConstants.EVENTHANDLER_METHODEXCEPTION,
+                         "org.apache.velocity.app.event.implement.PrintExceptions" );
+        ve2.setProperty( "eventhandler.methodexception.message", "true" );
         ve2.init();
 
         VelocityEngine ve3 = new VelocityEngine();
-        ve3.setProperty(RuntimeConstants.EVENTHANDLER_METHODEXCEPTION, "org.apache.velocity.app.event.implement.PrintExceptions");
-        ve3.setProperty("eventhandler.methodexception.stacktrace","true");
+        ve3.setProperty( RuntimeConstants.EVENTHANDLER_METHODEXCEPTION,
+                         "org.apache.velocity.app.event.implement.PrintExceptions" );
+        ve3.setProperty( "eventhandler.methodexception.stacktrace", "true" );
         ve3.init();
 
         Context context;
         StringWriter writer;
 
         context = new VelocityContext();
-        context.put("list",new ArrayList());
+        context.put( "list", new ArrayList() );
 
         // exception only
         writer = new StringWriter();
-        ve1.evaluate(context,writer,"test","$list.get(0)");
-        assertTrue(writer.toString().indexOf("IndexOutOfBoundsException") != -1);
-        assertTrue(writer.toString().indexOf("Index: 0, Size: 0") == -1);
-        assertTrue(writer.toString().indexOf("ArrayList") == -1);
+        ve1.evaluate( context, writer, "test", "$list.get(0)" );
+        assertTrue( writer.toString().indexOf( "IndexOutOfBoundsException" ) != -1 );
+        assertTrue( writer.toString().indexOf( "Index: 0, Size: 0" ) == -1 );
+        assertTrue( writer.toString().indexOf( "ArrayList" ) == -1 );
 
         // message
         writer = new StringWriter();
-        ve2.evaluate(context,writer,"test","$list.get(0)");
-        assertTrue(writer.toString().indexOf("IndexOutOfBoundsException") != -1);
-        assertTrue(writer.toString().indexOf("Index: 0, Size: 0") != -1);
-        assertTrue(writer.toString().indexOf("ArrayList") == -1);
+        ve2.evaluate( context, writer, "test", "$list.get(0)" );
+        assertTrue( writer.toString().indexOf( "IndexOutOfBoundsException" ) != -1 );
+        assertTrue( writer.toString().indexOf( "Index: 0, Size: 0" ) != -1 );
+        assertTrue( writer.toString().indexOf( "ArrayList" ) == -1 );
 
         // stack trace
         writer = new StringWriter();
-        ve3.evaluate(context,writer,"test","$list.get(0)");
-        assertTrue(writer.toString().indexOf("IndexOutOfBoundsException") != -1);
-        assertTrue(writer.toString().indexOf("ArrayList") != -1);
+        ve3.evaluate( context, writer, "test", "$list.get(0)" );
+        assertTrue( writer.toString().indexOf( "IndexOutOfBoundsException" ) != -1 );
+        assertTrue( writer.toString().indexOf( "ArrayList" ) != -1 );
 
-        log("PrintException handler successful.");
+        log( "PrintException handler successful." );
 
     }
 
-    public void testIncludeNotFound() throws Exception
+    @Test
+    public void testIncludeNotFound()
+        throws Exception
     {
         VelocityEngine ve = new VelocityEngine();
-        ve.setProperty(RuntimeConstants.EVENTHANDLER_INCLUDE, "org.apache.velocity.app.event.implement.IncludeNotFound");
-        ve.addProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, FILE_RESOURCE_LOADER_PATH);
+        ve.setProperty( RuntimeConstants.EVENTHANDLER_INCLUDE,
+                        "org.apache.velocity.app.event.implement.IncludeNotFound" );
+        ve.addProperty( RuntimeConstants.FILE_RESOURCE_LOADER_PATH, FILE_RESOURCE_LOADER_PATH );
         ve.init();
 
         Template template;
@@ -371,65 +389,64 @@ public class BuiltInEventHandlerTestCase extends BaseTestCase {
         Writer fwriter;
         Context context;
 
-        template = ve.getTemplate( getFileName(null, "test6", TMPL_FILE_EXT) );
+        template = ve.getTemplate( getFileName( null, "test6", TMPL_FILE_EXT ) );
 
-        fos = new FileOutputStream (
-                getFileName(RESULTS_DIR, "test6", RESULT_FILE_EXT));
+        fos = new FileOutputStream( getFileName( RESULTS_DIR, "test6", RESULT_FILE_EXT ) );
 
-        fwriter = new BufferedWriter( new OutputStreamWriter(fos) );
+        fwriter = new BufferedWriter( new OutputStreamWriter( fos ) );
 
         context = new VelocityContext();
-        template.merge(context, fwriter);
+        template.merge( context, fwriter );
         fwriter.flush();
         fwriter.close();
 
-        if (!isMatch(RESULTS_DIR, COMPARE_DIR, "test6", RESULT_FILE_EXT, CMP_FILE_EXT))
+        if ( !isMatch( RESULTS_DIR, COMPARE_DIR, "test6", RESULT_FILE_EXT, CMP_FILE_EXT ) )
         {
-            fail("Output incorrect.");
+            fail( "Output incorrect." );
         }
 
-        log("IncludeNotFound handler successful.");
+        log( "IncludeNotFound handler successful." );
 
     }
 
-    public void testIncludeNotFoundMissingResourceName() throws Exception
+    @Test
+    public void testIncludeNotFoundMissingResourceName()
+        throws Exception
     {
         // uses base test support
-        engine.setProperty(RuntimeConstants.EVENTHANDLER_INCLUDE, "org.apache.velocity.app.event.implement.IncludeNotFound");
-        addTemplate("notfound.vm", "$missingResource");
-        assertEvalEquals("foo", "#parse('foo')");
+        engine.setProperty( RuntimeConstants.EVENTHANDLER_INCLUDE,
+                            "org.apache.velocity.app.event.implement.IncludeNotFound" );
+        addTemplate( "notfound.vm", "$missingResource" );
+        assertEvalEquals( "foo", "#parse('foo')" );
     }
 
-    public void testIncludeRelativePath() throws Exception
+    @Test
+    public void testIncludeRelativePath()
+        throws Exception
     {
         VelocityEngine ve = new VelocityEngine();
-        ve.setProperty(RuntimeConstants.EVENTHANDLER_INCLUDE, "org.apache.velocity.app.event.implement.IncludeRelativePath");
-        ve.addProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, FILE_RESOURCE_LOADER_PATH);
+        ve.setProperty( RuntimeConstants.EVENTHANDLER_INCLUDE,
+                        "org.apache.velocity.app.event.implement.IncludeRelativePath" );
+        ve.addProperty( RuntimeConstants.FILE_RESOURCE_LOADER_PATH, FILE_RESOURCE_LOADER_PATH );
         ve.init();
 
-        Template template;
-        FileOutputStream fos;
-        Writer fwriter;
-        Context context;
+        Template template = ve.getTemplate( getFileName( null, "subdir/test2", TMPL_FILE_EXT ) );
 
-        template = ve.getTemplate( getFileName(null, "subdir/test2", TMPL_FILE_EXT) );
+        FileOutputStream fos = new FileOutputStream( getFileName( RESULTS_DIR, "test2", RESULT_FILE_EXT ) );
 
-        fos = new FileOutputStream (
-                getFileName(RESULTS_DIR, "test2", RESULT_FILE_EXT));
-
-        fwriter = new BufferedWriter( new OutputStreamWriter(fos) );
+        BufferedWriter fwriter = new BufferedWriter( new OutputStreamWriter( fos ) );
 
         context = new VelocityContext();
-        template.merge(context, fwriter);
+        template.merge( context, fwriter );
         fwriter.flush();
         fwriter.close();
 
-        if (!isMatch(RESULTS_DIR, COMPARE_DIR, "test2", RESULT_FILE_EXT, CMP_FILE_EXT))
+        if ( !isMatch( RESULTS_DIR, COMPARE_DIR, "test2", RESULT_FILE_EXT, CMP_FILE_EXT ) )
         {
-            fail("Output incorrect.");
+            fail( "Output incorrect." );
         }
 
-        log("IncludeRelativePath handler successful.");
+        log( "IncludeRelativePath handler successful." );
 
     }
 }
