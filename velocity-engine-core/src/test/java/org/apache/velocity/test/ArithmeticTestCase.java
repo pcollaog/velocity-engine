@@ -44,32 +44,6 @@ public class ArithmeticTestCase
         return new TestSuite( ArithmeticTestCase.class );
     }
 
-    public void testSubtract()
-    {
-        subtractHelper( new Integer( 100 ), new Short( (short) 20 ), 80, Integer.class );
-        subtractHelper( new Byte( (byte) 100 ), new Short( (short) 20 ), 80, Short.class );
-        subtractHelper( new Float( 100 ), new Short( (short) 20 ), 80, Float.class );
-        subtractHelper( new Byte( (byte) 100 ), new Double( 20 ), 80, Double.class );
-        subtractHelper( BigInteger.valueOf( 100 ), new Integer( 20 ), 80, BigInteger.class );
-        subtractHelper( new Integer( 100 ), BigDecimal.valueOf( 20 ), 80, BigDecimal.class );
-
-        // Test overflow
-        subtractHelper( new Integer( Integer.MIN_VALUE ), new Short( (short) 20 ), (double) Integer.MIN_VALUE - 20,
-                        Long.class );
-        subtractHelper( new Integer( -20 ), new Long( Long.MAX_VALUE ), -20d - (double) Long.MAX_VALUE,
-                        BigInteger.class );
-        subtractHelper( new Integer( Integer.MAX_VALUE ), new Long( Long.MIN_VALUE ), (double) Long.MAX_VALUE
-            + (double) Integer.MAX_VALUE, BigInteger.class );
-    }
-
-    private void subtractHelper( Number n1, Number n2, double expectedResult, Class expectedResultType )
-    {
-        Number result = MathUtils.subtract( n1, n2 );
-        assertEquals( "The arithmetic operation produced an unexpected result.", expectedResult, result.doubleValue(),
-                      0.01 );
-        assertEquals( "ResultType does not match.", expectedResultType, result.getClass() );
-    }
-
     public void testMultiply()
     {
         multiplyHelper( new Integer( 10 ), new Short( (short) 20 ), 200, Integer.class );
