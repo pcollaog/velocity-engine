@@ -44,25 +44,6 @@ public class ArithmeticTestCase
         return new TestSuite( ArithmeticTestCase.class );
     }
 
-    public void testDivide()
-    {
-        divideHelper( new Integer( 10 ), new Short( (short) 2 ), 5, Integer.class );
-        divideHelper( new Byte( (byte) 10 ), new Short( (short) 2 ), 5, Short.class );
-        divideHelper( BigInteger.valueOf( 10 ), new Short( (short) 2 ), 5, BigInteger.class );
-        divideHelper( new Integer( 10 ), new Short( (short) 4 ), 2, Integer.class );
-        divideHelper( new Integer( 10 ), new Float( 2.5f ), 4, Float.class );
-        divideHelper( new Integer( 10 ), new Double( 2.5 ), 4, Double.class );
-        divideHelper( new Integer( 10 ), new BigDecimal( 2.5 ), 4, BigDecimal.class );
-    }
-
-    private void divideHelper( Number n1, Number n2, double expectedResult, Class expectedResultType )
-    {
-        Number result = MathUtils.divide( n1, n2 );
-        assertEquals( "The arithmetic operation produced an unexpected result.", expectedResult, result.doubleValue(),
-                      0.01 );
-        assertEquals( "ResultType does not match.", expectedResultType, result.getClass() );
-    }
-
     public void testModulo()
     {
         moduloHelper( new Integer( 10 ), new Short( (short) 2 ), 0, Integer.class );
