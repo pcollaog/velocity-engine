@@ -1,28 +1,23 @@
 package org.apache.velocity.test;
 
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.    
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for additional information regarding
+ * copyright ownership. The ASF licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
-import java.io.StringWriter;
-import java.io.Writer;
+import static org.junit.Assert.fail;
+
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.app.event.EventCartridge;
 import org.apache.velocity.app.event.MethodExceptionEventHandler;
 import org.apache.velocity.app.event.ReferenceInsertionEventHandler;
@@ -32,7 +27,8 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.util.ContextAware;
 import org.apache.velocity.util.RuntimeServicesAware;
-import org.apache.velocity.test.misc.TestLogChute;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests event handling for all event handlers except IncludeEventHandler.  This is tested
@@ -41,18 +37,24 @@ import org.apache.velocity.test.misc.TestLogChute;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id$
  */
-public class EventHandlingTestCase extends BaseTestCase
+public class EventHandlingTestCase
+    extends AbstractBaseTest
 {
-    private static String NO_REFERENCE_VALUE =  "<no reference value>";
-    private static String REFERENCE_VALUE =  "<reference value>";
+    private static String NO_REFERENCE_VALUE = "<no reference value>";
 
-    public EventHandlingTestCase(String name)
+    private static String REFERENCE_VALUE = "<reference value>";
+
+    @Before
+    @Override
+    public void before()
+        throws Exception
     {
-        super(name);
+        super.before();
     }
 
+    @Test
     public void testManualEventHandlers()
-            throws Exception
+        throws Exception
     {
         TestEventCartridge te = new TestEventCartridge();
         /**
@@ -63,8 +65,8 @@ public class EventHandlingTestCase extends BaseTestCase
          */
 
         EventCartridge ec = new EventCartridge();
-        ec.addEventHandler(te);
-        ec.attachToContext(context);
+        ec.addEventHandler( te );
+        ec.attachToContext( context );
 
         /*
          *  now wrap the event cartridge - we want to make sure that
@@ -79,11 +81,12 @@ public class EventHandlingTestCase extends BaseTestCase
     /**
      * Test assigning the event handlers via properties
      */
+    @Test
     public void testConfigurationEventHandlers()
-            throws Exception
+        throws Exception
     {
-        engine.setProperty(RuntimeConstants.EVENTHANDLER_METHODEXCEPTION, TestEventCartridge.class.getName());
-        engine.setProperty(RuntimeConstants.EVENTHANDLER_REFERENCEINSERTION, TestEventCartridge.class.getName());
+        engine.setProperty( RuntimeConstants.EVENTHANDLER_METHODEXCEPTION, TestEventCartridge.class.getName() );
+        engine.setProperty( RuntimeConstants.EVENTHANDLER_REFERENCEINSERTION, TestEventCartridge.class.getName() );
 
         doTestReferenceInsertionEventHandler1();
         doTestReferenceInsertionEventHandler2();
@@ -95,42 +98,42 @@ public class EventHandlingTestCase extends BaseTestCase
      * Test all the event handlers using the given engine.
      */
     private void doTestReferenceInsertionEventHandler1()
-            throws Exception
+        throws Exception
     {
         VelocityContext outer = context;
-        context = new VelocityContext(context);
-        context.put("name", "Velocity");
+        context = new VelocityContext( context );
+        context.put( "name", "Velocity" );
 
         /*
          *  First, the reference insertion handler
          */
         String expected = REFERENCE_VALUE + REFERENCE_VALUE + REFERENCE_VALUE;
-        assertEvalEquals(expected, "$name$name$name");
+        assertEvalEquals( expected, "$name$name$name" );
 
         context = outer;
     }
 
     private void doTestReferenceInsertionEventHandler2()
-            throws Exception
+        throws Exception
     {
         VelocityContext outer = context;
-        context = new VelocityContext(context);
-        context.put("name", "Velocity");
+        context = new VelocityContext( context );
+        context.put( "name", "Velocity" );
 
         /*
          *  using the same handler, we can deal with
          *  null references as well
          */
-        assertEvalEquals(NO_REFERENCE_VALUE, "$floobie");
+        assertEvalEquals( NO_REFERENCE_VALUE, "$floobie" );
 
         context = outer;
     }
 
     private void doTestMethodExceptionEventHandler1()
-            throws Exception
+        throws Exception
     {
         VelocityContext outer = context;
-        context = new VelocityContext(context);
+        context = new VelocityContext( context );
 
         /*
          *  finally, we test a method exception event - we do this
@@ -142,27 +145,27 @@ public class EventHandlingTestCase extends BaseTestCase
          *  Note also how the reference insertion process
          *  happens as well
          */
-        context.put("allow_exception",Boolean.TRUE);
-        context.put("this", this );
+        context.put( "allow_exception", Boolean.TRUE );
+        context.put( "this", this );
 
-        evaluate(" $this.throwException()");
+        evaluate( " $this.throwException()" );
 
         context = outer;
     }
 
     private void doTestMethodExceptionEventHandler2()
-            throws Exception
+        throws Exception
     {
         VelocityContext outer = context;
-        context = new VelocityContext(context);
-        context.put("this", this );
+        context = new VelocityContext( context );
+        context.put( "this", this );
 
         /*
          *  now, we remove the exception flag, and we can see that the
          *  exception will propgate all the way up here, and
          *  wil be caught by the catch() block below
          */
-        assertEvalException("$this.throwException()", MethodInvocationException.class);
+        assertEvalException( "$this.throwException()", MethodInvocationException.class );
 
         context = outer;
     }
@@ -172,17 +175,13 @@ public class EventHandlingTestCase extends BaseTestCase
      *  the method invocation exception event handling
      */
     public void throwException()
-            throws Exception
+        throws Exception
     {
-        throw new Exception("Hello from throwException()");
+        throw new Exception( "Hello from throwException()" );
     }
 
-
-
     public static class TestEventCartridge
-            implements ReferenceInsertionEventHandler,
-                       MethodExceptionEventHandler,
-                       RuntimeServicesAware,ContextAware
+        implements ReferenceInsertionEventHandler, MethodExceptionEventHandler, RuntimeServicesAware, ContextAware
     {
         private RuntimeServices rs;
 
@@ -192,22 +191,21 @@ public class EventHandlingTestCase extends BaseTestCase
         public void setRuntimeServices( RuntimeServices rs )
         {
             // make sure this is only called once
-            if (this.rs == null)
+            if ( this.rs == null )
                 this.rs = rs;
 
             else
-                fail("initialize called more than once.");
+                fail( "initialize called more than once." );
         }
 
         /**
          *  Event handler for when a reference is inserted into the output stream.
          */
-        public Object referenceInsert( String reference, Object value  )
+        public Object referenceInsert( String reference, Object value )
         {
             // as a test, make sure this EventHandler is initialized
-            if (rs == null)
-                fail ("Event handler not initialized!");
-
+            if ( rs == null )
+                fail( "Event handler not initialized!" );
 
             /*
              *  if we have a value
@@ -215,7 +213,7 @@ public class EventHandlingTestCase extends BaseTestCase
              */
             String s = null;
 
-            if( value != null )
+            if ( value != null )
             {
                 s = REFERENCE_VALUE;
             }
@@ -225,7 +223,7 @@ public class EventHandlingTestCase extends BaseTestCase
                  * we only want to deal with $floobie - anything
                  *  else we let go
                  */
-                if ( reference.equals("$floobie") )
+                if ( reference.equals( "$floobie" ) )
                 {
                     s = NO_REFERENCE_VALUE;
                 }
@@ -239,30 +237,30 @@ public class EventHandlingTestCase extends BaseTestCase
         public Object methodException( Class claz, String method, Exception e )
         {
             // as a test, make sure this EventHandler is initialized
-            if (rs == null)
-                fail ("Event handler not initialized!");
+            if ( rs == null )
+                fail( "Event handler not initialized!" );
 
             // only do processing if the switch is on
-            if (context != null)
+            if ( context != null )
             {
-                boolean exceptionSwitch = context.containsKey("allow_exception");
+                boolean exceptionSwitch = context.containsKey( "allow_exception" );
 
-                if( exceptionSwitch && method.equals("throwException"))
+                if ( exceptionSwitch && method.equals( "throwException" ) )
                 {
                     return "handler";
                 }
                 else
-                    throw new RuntimeException(e);
+                    throw new RuntimeException( e );
 
-            } else
+            }
+            else
 
-                throw new RuntimeException(e);
+                throw new RuntimeException( e );
         }
 
         Context context;
 
-
-        public void setContext(Context context)
+        public void setContext( Context context )
         {
             this.context = context;
         }

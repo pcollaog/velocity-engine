@@ -1,23 +1,21 @@
 package org.apache.velocity.test;
 
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for additional information regarding
+ * copyright ownership. The ASF licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
+
+import static org.junit.Assert.fail;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -25,14 +23,13 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Vector;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.runtime.RuntimeSingleton;
 import org.apache.velocity.test.misc.TestLogChute;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests if we are context safe : can we switch objects in the context
@@ -47,35 +44,28 @@ import org.apache.velocity.test.misc.TestLogChute;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id$
  */
-public class ContextSafetyTestCase extends BaseTestCase implements TemplateTestBase
+public class ContextSafetyTestCase
+    extends AbstractBaseTest
+    implements TemplateTestBase
 {
-    public ContextSafetyTestCase(String name)
-    {
-        super(name);
-    }
 
+    @Before
     public void setUp()
-            throws Exception
+        throws Exception
     {
         Velocity.reset();
-        Velocity.setProperty(
-                Velocity.FILE_RESOURCE_LOADER_PATH, FILE_RESOURCE_LOADER_PATH);
+        Velocity.setProperty( Velocity.FILE_RESOURCE_LOADER_PATH, FILE_RESOURCE_LOADER_PATH );
 
-        Velocity.setProperty(
-                Velocity.RUNTIME_LOG_LOGSYSTEM_CLASS, TestLogChute.class.getName());
+        Velocity.setProperty( Velocity.RUNTIME_LOG_LOGSYSTEM_CLASS, TestLogChute.class.getName() );
 
         Velocity.init();
-    }
-
-    public static Test suite()
-    {
-        return new TestSuite(ContextSafetyTestCase.class);
     }
 
     /**
      * Runs the test.
      */
-    public void testContextSafety ()
+    @Test
+    public void testContextSafety()
         throws Exception
     {
         /*
@@ -84,9 +74,9 @@ public class ContextSafetyTestCase extends BaseTestCase implements TemplateTestB
          */
         Vector v = new Vector();
 
-        v.addElement( new String("vector hello 1") );
-        v.addElement( new String("vector hello 2") );
-        v.addElement( new String("vector hello 3") );
+        v.addElement( new String( "vector hello 1" ) );
+        v.addElement( new String( "vector hello 2" ) );
+        v.addElement( new String( "vector hello 3" ) );
 
         String strArray[] = new String[3];
 
@@ -96,32 +86,27 @@ public class ContextSafetyTestCase extends BaseTestCase implements TemplateTestB
 
         VelocityContext context = new VelocityContext();
 
-        assureResultsDirectoryExists(RESULT_DIR);
+        assureResultsDirectoryExists( RESULT_DIR );
 
         /*
          *  get the template and the output
          */
 
-        Template template = RuntimeSingleton.getTemplate(
-            getFileName(null, "context_safety", TMPL_FILE_EXT));
+        Template template = RuntimeSingleton.getTemplate( getFileName( null, "context_safety", TMPL_FILE_EXT ) );
 
-        FileOutputStream fos1 =
-            new FileOutputStream (
-                getFileName(RESULT_DIR, "context_safety1", RESULT_FILE_EXT));
+        FileOutputStream fos1 = new FileOutputStream( getFileName( RESULT_DIR, "context_safety1", RESULT_FILE_EXT ) );
 
-        FileOutputStream fos2 =
-            new FileOutputStream (
-                getFileName(RESULT_DIR, "context_safety2", RESULT_FILE_EXT));
+        FileOutputStream fos2 = new FileOutputStream( getFileName( RESULT_DIR, "context_safety2", RESULT_FILE_EXT ) );
 
-        Writer writer1 = new BufferedWriter(new OutputStreamWriter(fos1));
-        Writer writer2 = new BufferedWriter(new OutputStreamWriter(fos2));
+        Writer writer1 = new BufferedWriter( new OutputStreamWriter( fos1 ) );
+        Writer writer2 = new BufferedWriter( new OutputStreamWriter( fos2 ) );
 
         /*
          *  put the Vector into the context, and merge
          */
 
-        context.put("vector", v);
-        template.merge(context, writer1);
+        context.put( "vector", v );
+        template.merge( context, writer1 );
         writer1.flush();
         writer1.close();
 
@@ -129,17 +114,15 @@ public class ContextSafetyTestCase extends BaseTestCase implements TemplateTestB
          *  now put the string array into the context, and merge
          */
 
-        context.put("vector", strArray);
-        template.merge(context, writer2);
+        context.put( "vector", strArray );
+        template.merge( context, writer2 );
         writer2.flush();
         writer2.close();
 
-        if (!isMatch(RESULT_DIR,COMPARE_DIR,"context_safety1",
-                RESULT_FILE_EXT,CMP_FILE_EXT) ||
-            !isMatch(RESULT_DIR,COMPARE_DIR,"context_safety2",
-                RESULT_FILE_EXT,CMP_FILE_EXT))
+        if ( !isMatch( RESULT_DIR, COMPARE_DIR, "context_safety1", RESULT_FILE_EXT, CMP_FILE_EXT )
+            || !isMatch( RESULT_DIR, COMPARE_DIR, "context_safety2", RESULT_FILE_EXT, CMP_FILE_EXT ) )
         {
-            fail("Output incorrect.");
+            fail( "Output incorrect." );
         }
     }
 }

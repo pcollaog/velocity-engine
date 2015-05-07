@@ -29,6 +29,7 @@ import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
 import org.apache.velocity.runtime.resource.util.StringResourceRepository;
 import org.apache.velocity.test.misc.TestLogChute;
 import org.apache.velocity.util.StringUtils;
+import org.junit.Before;
 
 /**
  * Base test case that provides utility methods for
@@ -51,7 +52,8 @@ public abstract class AbstractBaseTest
 
     protected String stringRepoName = "string.repo";
 
-    protected void before()
+    @Before
+    public void before()
         throws Exception
     {
 
