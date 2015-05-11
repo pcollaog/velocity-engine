@@ -20,6 +20,7 @@ package org.apache.velocity.runtime.log;
  */
 
 import java.io.PrintStream;
+
 import org.apache.velocity.runtime.RuntimeServices;
 
 /**

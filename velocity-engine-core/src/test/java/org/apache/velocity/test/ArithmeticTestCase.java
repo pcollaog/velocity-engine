@@ -80,7 +80,7 @@ public class ArithmeticTestCase extends TestCase
 
         // Test overflow
         subtractHelper (new Integer(Integer.MIN_VALUE), new Short( (short)20), (double)Integer.MIN_VALUE-20, Long.class);
-        subtractHelper (new Integer (-20), new Long(Long.MAX_VALUE), -20d-(double)Long.MAX_VALUE, BigInteger.class);
+        subtractHelper (new Integer (-20), new Long(Long.MAX_VALUE), -20d-Long.MAX_VALUE, BigInteger.class);
         subtractHelper (new Integer (Integer.MAX_VALUE), new Long(Long.MIN_VALUE), (double)Long.MAX_VALUE+(double)Integer.MAX_VALUE, BigInteger.class);
     }
 
@@ -102,9 +102,9 @@ public class ArithmeticTestCase extends TestCase
         multiplyHelper (new Integer( 100), BigDecimal.valueOf(20),  2000, BigDecimal.class);
 
         // Test overflow
-        multiplyHelper (new Integer(Integer.MAX_VALUE), new Short( (short)10), (double)Integer.MAX_VALUE*10d, Long.class);
-        multiplyHelper (new Integer(Integer.MAX_VALUE), new Short( (short)-10), (double)Integer.MAX_VALUE*-10d, Long.class);
-        multiplyHelper (new Integer (20), new Long(Long.MAX_VALUE), 20d*(double)Long.MAX_VALUE, BigInteger.class);
+        multiplyHelper (new Integer(Integer.MAX_VALUE), new Short( (short)10), Integer.MAX_VALUE*10d, Long.class);
+        multiplyHelper (new Integer(Integer.MAX_VALUE), new Short( (short)-10), Integer.MAX_VALUE*-10d, Long.class);
+        multiplyHelper (new Integer (20), new Long(Long.MAX_VALUE), 20d*Long.MAX_VALUE, BigInteger.class);
     }
 
     private void multiplyHelper (Number n1, Number n2, double expectedResult, Class expectedResultType)

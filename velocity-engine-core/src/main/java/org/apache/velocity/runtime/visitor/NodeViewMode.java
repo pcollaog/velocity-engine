@@ -19,7 +19,6 @@ package org.apache.velocity.runtime.visitor;
  * under the License.    
  */
 
-import org.apache.velocity.runtime.directive.Stop;
 import org.apache.velocity.runtime.parser.Token;
 import org.apache.velocity.runtime.parser.node.ASTAddNode;
 import org.apache.velocity.runtime.parser.node.ASTAndNode;

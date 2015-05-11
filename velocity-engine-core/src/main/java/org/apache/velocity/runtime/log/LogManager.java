@@ -19,12 +19,13 @@ package org.apache.velocity.runtime.log;
  * under the License.
  */
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
 import org.apache.velocity.exception.VelocityException;
-import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.util.ClassUtils;
 
 /**

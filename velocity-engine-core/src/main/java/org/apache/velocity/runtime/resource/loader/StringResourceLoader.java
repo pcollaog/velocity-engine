@@ -19,20 +19,21 @@ package org.apache.velocity.runtime.resource.loader;
  * under the License.
  */
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.collections.ExtendedProperties;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.velocity.runtime.resource.Resource;
 import org.apache.velocity.runtime.resource.util.StringResource;
 import org.apache.velocity.runtime.resource.util.StringResourceRepository;
 import org.apache.velocity.runtime.resource.util.StringResourceRepositoryImpl;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.util.ClassUtils;
 
 /**

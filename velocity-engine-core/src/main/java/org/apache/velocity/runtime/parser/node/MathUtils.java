@@ -21,10 +21,10 @@ package org.apache.velocity.runtime.parser.node;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Utility-class for all arithmetic-operations.<br><br>

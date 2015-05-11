@@ -19,8 +19,9 @@ package org.apache.velocity.runtime.log;
  * under the License.    
  */
 
-import java.util.Vector;
 import java.util.Iterator;
+import java.util.Vector;
+
 import org.apache.velocity.runtime.RuntimeServices;
 
 /**

@@ -1,22 +1,18 @@
 package org.apache.velocity.runtime.parser.node;
 
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for additional information regarding
+ * copyright ownership. The ASF licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 import java.io.IOException;
@@ -48,48 +44,51 @@ import org.apache.velocity.runtime.parser.Parser;
  * @author <a href="mailto:kav@kav.dk">Kasper Nielsen</a>
  * @version $Id$
  */
-public class ASTDirective extends SimpleNode
+public class ASTDirective
+    extends SimpleNode
 {
     private Directive directive = null;
+
     private String directiveName = "";
+
     private boolean isDirective;
+
     private boolean isInitialized;
 
     /**
      * @param id
      */
-    public ASTDirective(int id)
+    public ASTDirective( int id )
     {
-        super(id);
+        super( id );
     }
 
     /**
      * @param p
      * @param id
      */
-    public ASTDirective(Parser p, int id)
+    public ASTDirective( Parser p, int id )
     {
-        super(p, id);
+        super( p, id );
     }
-
 
     /**
      * @see org.apache.velocity.runtime.parser.node.SimpleNode#jjtAccept(org.apache.velocity.runtime.parser.node.ParserVisitor, java.lang.Object)
      */
-    public Object jjtAccept(ParserVisitor visitor, Object data)
+    public Object jjtAccept( ParserVisitor visitor, Object data )
     {
-        return visitor.visit(this, data);
+        return visitor.visit( this, data );
     }
 
     /**
      * @see org.apache.velocity.runtime.parser.node.SimpleNode#init(org.apache.velocity.context.InternalContextAdapter, java.lang.Object)
      */
-    public synchronized Object init( InternalContextAdapter context, Object data)
-    throws TemplateInitException
+    public synchronized Object init( InternalContextAdapter context, Object data )
+        throws TemplateInitException
     {
         /** method is synchronized to avoid concurrent directive initialization **/
 
-        if (!isInitialized)
+        if ( !isInitialized )
         {
             super.init( context, data );
 
@@ -97,54 +96,47 @@ public class ASTDirective extends SimpleNode
              *  only do things that are not context dependent
              */
 
-            if (parser.isDirective( directiveName ))
+            if ( parser.isDirective( directiveName ) )
             {
                 isDirective = true;
 
                 try
                 {
-                    directive = (Directive) parser.getDirective( directiveName )
-                        .getClass().newInstance();
+                    directive = parser.getDirective( directiveName ).getClass().newInstance();
                 }
-                catch (InstantiationException e)
+                catch ( InstantiationException e )
                 {
-                    throw new VelocityException(
-                            "Couldn't initialize directive of class " +
-                            parser.getDirective(directiveName).getClass().getName(),
-                            e);
+                    throw new VelocityException( "Couldn't initialize directive of class "
+                        + parser.getDirective( directiveName ).getClass().getName(), e );
                 }
-                catch (IllegalAccessException e)
+                catch ( IllegalAccessException e )
                 {
-                    throw new VelocityException(
-                            "Couldn't initialize directive of class " +
-                            parser.getDirective(directiveName).getClass().getName(),
-                            e);
+                    throw new VelocityException( "Couldn't initialize directive of class "
+                        + parser.getDirective( directiveName ).getClass().getName(), e );
                 }
 
-                directive.setLocation(getLine(), getColumn(), getTemplateName());
-                directive.init(rsvc, context,this);
+                directive.setLocation( getLine(), getColumn(), getTemplateName() );
+                directive.init( rsvc, context, this );
             }
-            else if( directiveName.startsWith("@") )
+            else if ( directiveName.startsWith( "@" ) )
             {
-                if( this.jjtGetNumChildren() > 0 )
+                if ( this.jjtGetNumChildren() > 0 )
                 {
                     // block macro call (normal macro call but has AST body)
-                    directiveName = directiveName.substring(1);
+                    directiveName = directiveName.substring( 1 );
 
-                    directive = new BlockMacro(directiveName);
-                    directive.setLocation(getLine(), getColumn(), getTemplateName());
+                    directive = new BlockMacro( directiveName );
+                    directive.setLocation( getLine(), getColumn(), getTemplateName() );
 
                     try
                     {
                         directive.init( rsvc, context, this );
                     }
-                    catch (TemplateInitException die)
+                    catch ( TemplateInitException die )
                     {
-                        throw new TemplateInitException(die.getMessage(),
-                            (ParseException) die.getCause(),
-                            die.getTemplateName(),
-                            die.getColumnNumber() + getColumn(),
-                            die.getLineNumber() + getLine());
+                        throw new TemplateInitException( die.getMessage(), (ParseException) die.getCause(),
+                                                         die.getTemplateName(), die.getColumnNumber() + getColumn(),
+                                                         die.getLineNumber() + getLine() );
                     }
                     isDirective = true;
                 }
@@ -160,8 +152,8 @@ public class ASTDirective extends SimpleNode
                 /**
                  * Create a new RuntimeMacro
                  */
-                directive = new RuntimeMacro(directiveName);
-                directive.setLocation(getLine(), getColumn(), getTemplateName());
+                directive = new RuntimeMacro( directiveName );
+                directive.setLocation( getLine(), getColumn(), getTemplateName() );
 
                 /**
                  * Initialize it
@@ -174,13 +166,11 @@ public class ASTDirective extends SimpleNode
                 /**
                  * correct the line/column number if an exception is caught
                  */
-                catch (TemplateInitException die)
+                catch ( TemplateInitException die )
                 {
-                    throw new TemplateInitException(die.getMessage(),
-                            (ParseException) die.getCause(),
-                            die.getTemplateName(),
-                            die.getColumnNumber() + getColumn(),
-                            die.getLineNumber() + getLine());
+                    throw new TemplateInitException( die.getMessage(), (ParseException) die.getCause(),
+                                                     die.getTemplateName(), die.getColumnNumber() + getColumn(),
+                                                     die.getLineNumber() + getLine() );
                 }
                 isDirective = true;
             }
@@ -194,20 +184,20 @@ public class ASTDirective extends SimpleNode
     /**
      * @see org.apache.velocity.runtime.parser.node.SimpleNode#render(org.apache.velocity.context.InternalContextAdapter, java.io.Writer)
      */
-    public boolean render( InternalContextAdapter context, Writer writer)
-        throws IOException,MethodInvocationException, ResourceNotFoundException, ParseErrorException
+    public boolean render( InternalContextAdapter context, Writer writer )
+        throws IOException, MethodInvocationException, ResourceNotFoundException, ParseErrorException
     {
         /*
          *  normal processing
          */
 
-        if (isDirective)
+        if ( isDirective )
         {
-            directive.render(context, writer, this);
+            directive.render( context, writer, this );
         }
         else
         {
-            writer.write( "#");
+            writer.write( "#" );
             writer.write( directiveName );
         }
 
@@ -236,11 +226,7 @@ public class ASTDirective extends SimpleNode
     @Override
     public String toString()
     {
-		return "ASTDirective [" + super.toString() + ", directiveName="
-		        + directiveName + "]";
+        return "ASTDirective [" + super.toString() + ", directiveName=" + directiveName + "]";
     }
 
 }
-
-
-

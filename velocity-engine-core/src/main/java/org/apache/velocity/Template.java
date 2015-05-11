@@ -1,22 +1,18 @@
 package org.apache.velocity;
 
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for additional information regarding
+ * copyright ownership. The ASF licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 import java.io.BufferedReader;
@@ -64,13 +60,15 @@ import org.apache.velocity.runtime.resource.ResourceManager;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id$
  */
-public class Template extends Resource
+public class Template
+    extends Resource
 {
     /*
      * The name of the variable to use when placing
      * the scope object into the context.
      */
     private String scopeName = "template";
+
     private boolean provideScope = false;
 
     private VelocityException errorCondition = null;
@@ -79,8 +77,8 @@ public class Template extends Resource
     public Template()
     {
         super();
-        
-        setType(ResourceManager.RESOURCE_TEMPLATE);
+
+        setType( ResourceManager.RESOURCE_TEMPLATE );
     }
 
     /**
@@ -105,9 +103,9 @@ public class Template extends Resource
          */
         try
         {
-            is = resourceLoader.getResourceStream(name);
+            is = resourceLoader.getResourceStream( name );
         }
-        catch( ResourceNotFoundException rnfe )
+        catch ( ResourceNotFoundException rnfe )
         {
             /*
              *  remember and re-throw
@@ -122,7 +120,7 @@ public class Template extends Resource
          *  forgets to throw a proper exception
          */
 
-        if (is != null)
+        if ( is != null )
         {
             /*
              *  now parse the template
@@ -131,16 +129,15 @@ public class Template extends Resource
             try
             {
                 BufferedReader br = new BufferedReader( new InputStreamReader( is, encoding ) );
-                data = rsvc.parse( br, name);
+                data = rsvc.parse( br, name );
                 initDocument();
                 return true;
             }
-            catch( UnsupportedEncodingException  uce )
+            catch ( UnsupportedEncodingException uce )
             {
-                String msg = "Template.process : Unsupported input encoding : " + encoding
-                + " for template " + name;
+                String msg = "Template.process : Unsupported input encoding : " + encoding + " for template " + name;
 
-                errorCondition  = new ParseErrorException( msg );
+                errorCondition = new ParseErrorException( msg );
                 throw errorCondition;
             }
             catch ( ParseException pex )
@@ -148,21 +145,20 @@ public class Template extends Resource
                 /*
                  *  remember the error and convert
                  */
-                errorCondition =  new ParseErrorException(pex, name);
+                errorCondition = new ParseErrorException( pex, name );
                 throw errorCondition;
             }
             catch ( TemplateInitException pex )
             {
-                errorCondition = new ParseErrorException( pex, name);
+                errorCondition = new ParseErrorException( pex, name );
                 throw errorCondition;
             }
             /**
              * pass through runtime exceptions
              */
-            catch( RuntimeException e )
+            catch ( RuntimeException e )
             {
-                errorCondition = new VelocityException("Exception thrown processing Template "
-                    +getName(), e);
+                errorCondition = new VelocityException( "Exception thrown processing Template " + getName(), e );
                 throw errorCondition;
             }
             finally
@@ -174,14 +170,14 @@ public class Template extends Resource
                 {
                     is.close();
                 }
-                catch(IOException e)
+                catch ( IOException e )
                 {
                     // If we are already throwing an exception then we want the original
                     // exception to be continued to be thrown, otherwise, throw a new Exception.
-                    if (errorCondition == null)
+                    if ( errorCondition == null )
                     {
-                         throw new VelocityException(e);
-                    }                    
+                        throw new VelocityException( e );
+                    }
                 }
             }
         }
@@ -190,7 +186,7 @@ public class Template extends Resource
             /*
              *  is == null, therefore we have some kind of file issue
              */
-            errorCondition = new ResourceNotFoundException("Unknown resource error for resource " + name );
+            errorCondition = new ResourceNotFoundException( "Unknown resource error for resource " + name );
             throw errorCondition;
         }
     }
@@ -203,13 +199,13 @@ public class Template extends Resource
      * @throws TemplateInitException When a problem occurs during the document initialization.
      */
     public void initDocument()
-    throws TemplateInitException
+        throws TemplateInitException
     {
         /*
          *  send an empty InternalContextAdapter down into the AST to initialize it
          */
 
-        InternalContextAdapterImpl ica = new InternalContextAdapterImpl(  new VelocityContext() );
+        InternalContextAdapterImpl ica = new InternalContextAdapterImpl( new VelocityContext() );
 
         try
         {
@@ -224,10 +220,10 @@ public class Template extends Resource
              *  init the AST
              */
 
-            ((SimpleNode)data).init( ica, rsvc);
+            ( (SimpleNode) data ).init( ica, rsvc );
 
-            String property = scopeName+'.'+RuntimeConstants.PROVIDE_SCOPE_CONTROL;
-            provideScope = rsvc.getBoolean(property, provideScope);
+            String property = scopeName + '.' + RuntimeConstants.PROVIDE_SCOPE_CONTROL;
+            provideScope = rsvc.getBoolean( property, provideScope );
         }
         finally
         {
@@ -254,13 +250,12 @@ public class Template extends Resource
      *          to syntax (or other) error.
      *  @throws MethodInvocationException When a method on a referenced object in the context could not invoked.
      */
-    public void merge( Context context, Writer writer)
+    public void merge( Context context, Writer writer )
         throws ResourceNotFoundException, ParseErrorException, MethodInvocationException
     {
-        merge(context, writer, null);
+        merge( context, writer, null );
     }
 
-    
     /**
      * The AST node structure is merged with the
      * context to produce the final output.
@@ -275,7 +270,7 @@ public class Template extends Resource
      *  @throws MethodInvocationException When a method on a referenced object in the context could not invoked.
      *  @since 1.6
      */
-    public void merge( Context context, Writer writer, List macroLibraries)
+    public void merge( Context context, Writer writer, List<String> macroLibraries )
         throws ResourceNotFoundException, ParseErrorException, MethodInvocationException
     {
         /*
@@ -284,12 +279,12 @@ public class Template extends Resource
          *  Template
          */
 
-        if (errorCondition != null)
+        if ( errorCondition != null )
         {
             throw errorCondition;
         }
 
-        if( data != null)
+        if ( data != null )
         {
             /*
              *  create an InternalContextAdapter to carry the user Context down
@@ -301,74 +296,71 @@ public class Template extends Resource
             /**
              * Set the macro libraries
              */
-            ica.setMacroLibraries(macroLibraries);
+            ica.setMacroLibraries( macroLibraries );
 
-            if (macroLibraries != null)
+            if ( macroLibraries != null )
             {
-                for (int i = 0; i < macroLibraries.size(); i++)
+                for ( int i = 0; i < macroLibraries.size(); i++ )
                 {
                     /**
                      * Build the macro library
                      */
                     try
                     {
-                        rsvc.getTemplate((String) macroLibraries.get(i));
+                        rsvc.getTemplate( macroLibraries.get( i ) );
                     }
-                    catch (ResourceNotFoundException re)
+                    catch ( ResourceNotFoundException re )
                     {
                         /*
                         * the macro lib wasn't found.  Note it and throw
                         */
-                        rsvc.getLog().error("template.merge(): " +
-                                "cannot find template " +
-                                (String) macroLibraries.get(i));
+                        rsvc.getLog().error( "template.merge(): " + "cannot find template " + macroLibraries.get( i ) );
                         throw re;
                     }
-                    catch (ParseErrorException pe)
+                    catch ( ParseErrorException pe )
                     {
                         /*
                         * the macro lib was found, but didn't parse - syntax error
                         *  note it and throw
                         */
-                        rsvc.getLog().error("template.merge(): " +
-                                "syntax error in template " +
-                                (String) macroLibraries.get(i) + ".");
+                        rsvc.getLog().error( "template.merge(): " + "syntax error in template "
+                                                 + macroLibraries.get( i ) + "." );
                         throw pe;
                     }
-                    
-                    catch (Exception e)
+
+                    catch ( Exception e )
                     {
-                        throw new RuntimeException("Template.merge(): parse failed in template  " +
-                                (String) macroLibraries.get(i) + ".", e);
+                        throw new RuntimeException( "Template.merge(): parse failed in template  "
+                            + macroLibraries.get( i ) + ".", e );
                     }
                 }
             }
 
-            if (provideScope)
+            if ( provideScope )
             {
-                ica.put(scopeName, new Scope(this, ica.get(scopeName)));
+                ica.put( scopeName, new Scope( this, ica.get( scopeName ) ) );
             }
             try
             {
                 ica.pushCurrentTemplateName( name );
                 ica.setCurrentResource( this );
 
-                ( (SimpleNode) data ).render( ica, writer);
+                ( (SimpleNode) data ).render( ica, writer );
             }
-            catch (StopCommand stop)
+            catch ( StopCommand stop )
             {
-                if (!stop.isFor(this))
+                if ( !stop.isFor( this ) )
                 {
                     throw stop;
                 }
-                else if (rsvc.getLog().isDebugEnabled())
+                else if ( rsvc.getLog().isDebugEnabled() )
                 {
-                    rsvc.getLog().debug(stop.getMessage());
+                    rsvc.getLog().debug( stop.getMessage() );
                 }
             }
-            catch (IOException e)
+            catch ( IOException e )
             {
-                throw new VelocityException("IO Error rendering template '"+ name + "'", e);
+                throw new VelocityException( "IO Error rendering template '" + name + "'", e );
             }
             finally
             {
@@ -378,23 +370,23 @@ public class Template extends Resource
                 ica.popCurrentTemplateName();
                 ica.setCurrentResource( null );
 
-                if (provideScope)
+                if ( provideScope )
                 {
-                    Object obj = ica.get(scopeName);
-                    if (obj instanceof Scope)
+                    Object obj = ica.get( scopeName );
+                    if ( obj instanceof Scope )
                     {
-                        Scope scope = (Scope)obj;
-                        if (scope.getParent() != null)
+                        Scope scope = (Scope) obj;
+                        if ( scope.getParent() != null )
                         {
-                            ica.put(scopeName, scope.getParent());
+                            ica.put( scopeName, scope.getParent() );
                         }
-                        else if (scope.getReplaced() != null)
+                        else if ( scope.getReplaced() != null )
                         {
-                            ica.put(scopeName, scope.getReplaced());
+                            ica.put( scopeName, scope.getReplaced() );
                         }
                         else
                         {
-                            ica.remove(scopeName);
+                            ica.remove( scopeName );
                         }
                     }
                 }
@@ -406,10 +398,9 @@ public class Template extends Resource
              * this shouldn't happen either, but just in case.
              */
 
-            String msg = "Template.merge() failure. The document is null, " +
-                "most likely due to parsing error.";
+            String msg = "Template.merge() failure. The document is null, " + "most likely due to parsing error.";
 
-            throw new RuntimeException(msg);
+            throw new RuntimeException( msg );
 
         }
     }

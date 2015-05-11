@@ -20,6 +20,7 @@ package org.apache.velocity.runtime.parser.node;
  */
 
 import java.util.Map;
+
 import org.apache.velocity.exception.VelocityException;
 import org.apache.velocity.runtime.log.Log;
 

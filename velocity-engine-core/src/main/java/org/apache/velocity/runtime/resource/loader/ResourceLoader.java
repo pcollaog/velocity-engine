@@ -21,13 +21,13 @@ package org.apache.velocity.runtime.resource.loader;
 
 import java.io.InputStream;
 
+import org.apache.commons.collections.ExtendedProperties;
+import org.apache.velocity.exception.ResourceNotFoundException;
+import org.apache.velocity.exception.VelocityException;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.log.Log;
 import org.apache.velocity.runtime.resource.Resource;
 import org.apache.velocity.runtime.resource.ResourceCacheImpl;
-import org.apache.velocity.exception.ResourceNotFoundException;
-import org.apache.velocity.exception.VelocityException;
-import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * This is abstract class the all text resource loaders should

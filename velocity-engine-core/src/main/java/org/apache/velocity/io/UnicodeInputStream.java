@@ -1,29 +1,23 @@
 package org.apache.velocity.io;
 
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for additional information regarding
+ * copyright ownership. The ASF licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
-
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
-
 
 /**
  * This is an input stream that is unicode BOM aware. This allows you to e.g. read
@@ -45,33 +39,44 @@ public class UnicodeInputStream
 {
 
     /** BOM Marker for UTF 8. See http://www.unicode.org/unicode/faq/utf_bom.html */
-    public static final UnicodeBOM UTF8_BOM = new UnicodeBOM("UTF-8", new byte [] { (byte)0xef, (byte)0xbb, (byte)0xbf });
+    public static final UnicodeBOM UTF8_BOM = new UnicodeBOM( "UTF-8", new byte[] {
+        (byte) 0xef,
+        (byte) 0xbb,
+        (byte) 0xbf } );
 
     /** BOM Marker for UTF 16, little endian. See http://www.unicode.org/unicode/faq/utf_bom.html */
-    public static final UnicodeBOM UTF16LE_BOM = new UnicodeBOM("UTF-16LE", new byte [] { (byte)0xff, (byte)0xfe });
+    public static final UnicodeBOM UTF16LE_BOM = new UnicodeBOM( "UTF-16LE", new byte[] { (byte) 0xff, (byte) 0xfe } );
 
     /** BOM Marker for UTF 16, big endian. See http://www.unicode.org/unicode/faq/utf_bom.html */
-    public static final UnicodeBOM UTF16BE_BOM = new UnicodeBOM("UTF-16BE", new byte [] { (byte)0xfe, (byte)0xff });
+    public static final UnicodeBOM UTF16BE_BOM = new UnicodeBOM( "UTF-16BE", new byte[] { (byte) 0xfe, (byte) 0xff } );
 
     /**
      * BOM Marker for UTF 32, little endian. See http://www.unicode.org/unicode/faq/utf_bom.html
      *
      * TODO: Does Java actually support this?
      */
-    public static final UnicodeBOM UTF32LE_BOM = new UnicodeBOM("UTF-32LE", new byte [] { (byte)0xff, (byte)0xfe, (byte)0x00, (byte)0x00 });
+    public static final UnicodeBOM UTF32LE_BOM = new UnicodeBOM( "UTF-32LE", new byte[] {
+        (byte) 0xff,
+        (byte) 0xfe,
+        (byte) 0x00,
+        (byte) 0x00 } );
 
     /**
      * BOM Marker for UTF 32, big endian. See http://www.unicode.org/unicode/faq/utf_bom.html
      *
      * TODO: Does Java actually support this?
      */
-    public static final UnicodeBOM UTF32BE_BOM = new UnicodeBOM("UTF-32BE", new byte [] { (byte)0x00, (byte)0x00, (byte)0xfe, (byte)0xff });
+    public static final UnicodeBOM UTF32BE_BOM = new UnicodeBOM( "UTF-32BE", new byte[] {
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0xfe,
+        (byte) 0xff } );
 
     /** The maximum amount of bytes to read for a BOM */
     private static final int MAX_BOM_SIZE = 4;
 
     /** Buffer for BOM reading */
-    private byte [] buf = new byte[MAX_BOM_SIZE];
+    private byte[] buf = new byte[MAX_BOM_SIZE];
 
     /** Buffer pointer. */
     private int pos = 0;
@@ -89,10 +94,10 @@ public class UnicodeInputStream
      *
      * @param  inputStream The input stream to use for reading.
      */
-    public UnicodeInputStream(final InputStream inputStream)
-            throws IllegalStateException, IOException
+    public UnicodeInputStream( final InputStream inputStream )
+        throws IllegalStateException, IOException
     {
-        this(inputStream, true);
+        this( inputStream, true );
     }
 
     /**
@@ -101,21 +106,21 @@ public class UnicodeInputStream
      * @param  inputStream The input stream to use for reading.
      * @param skipBOM If this is set to true, a BOM read from the stream is discarded. This parameter should normally be true.
      */
-    public UnicodeInputStream(final InputStream inputStream, boolean skipBOM)
-            throws IllegalStateException, IOException
+    public UnicodeInputStream( final InputStream inputStream, boolean skipBOM )
+        throws IllegalStateException, IOException
     {
         super();
 
         this.skipBOM = skipBOM;
-        this.inputStream = new PushbackInputStream(inputStream, MAX_BOM_SIZE);
+        this.inputStream = new PushbackInputStream( inputStream, MAX_BOM_SIZE );
 
         try
         {
             this.encoding = readEncoding();
         }
-        catch (IOException ioe)
+        catch ( IOException ioe )
         {
-            throw new IllegalStateException("Could not read BOM from Stream", ioe);
+            throw new IllegalStateException( "Could not read BOM from Stream", ioe );
         }
     }
 
@@ -155,7 +160,7 @@ public class UnicodeInputStream
         UnicodeBOM encoding = null;
 
         // read first byte.
-        if (readByte())
+        if ( readByte() )
         {
             // Build a list of matches
             //
@@ -165,53 +170,53 @@ public class UnicodeInputStream
             // FF FE       --> UTF 16 LE
             // FF FE 00 00 --> UTF 32 LE
 
-            switch (buf[0])
+            switch ( buf[0] )
             {
-            case (byte)0x00: // UTF32 BE
-                encoding = match(UTF32BE_BOM, null);
-                break;
-            case (byte)0xef: // UTF8
-                encoding = match(UTF8_BOM, null);
-                break;
-            case (byte)0xfe: // UTF16 BE
-                encoding = match(UTF16BE_BOM, null);
-                break;
-            case (byte)0xff: // UTF16/32 LE
-                encoding = match(UTF16LE_BOM, null);
+                case (byte) 0x00: // UTF32 BE
+                    encoding = match( UTF32BE_BOM, null );
+                    break;
+                case (byte) 0xef: // UTF8
+                    encoding = match( UTF8_BOM, null );
+                    break;
+                case (byte) 0xfe: // UTF16 BE
+                    encoding = match( UTF16BE_BOM, null );
+                    break;
+                case (byte) 0xff: // UTF16/32 LE
+                    encoding = match( UTF16LE_BOM, null );
 
-                if (encoding != null)
-                {
-                    encoding = match(UTF32LE_BOM, encoding);
-                }
-                break;
+                    if ( encoding != null )
+                    {
+                        encoding = match( UTF32LE_BOM, encoding );
+                    }
+                    break;
 
-            default:
-                encoding = null;
-                break;
+                default:
+                    encoding = null;
+                    break;
             }
         }
 
-        pushback(encoding);
+        pushback( encoding );
 
-        return (encoding != null) ? encoding.getEncoding() : null;
+        return ( encoding != null ) ? encoding.getEncoding() : null;
     }
 
-    private final UnicodeBOM match(final UnicodeBOM matchEncoding, final UnicodeBOM noMatchEncoding)
+    private final UnicodeBOM match( final UnicodeBOM matchEncoding, final UnicodeBOM noMatchEncoding )
         throws IOException
     {
-        byte [] bom = matchEncoding.getBytes();
+        byte[] bom = matchEncoding.getBytes();
 
-        for (int i = 0; i < bom.length; i++)
+        for ( int i = 0; i < bom.length; i++ )
         {
-            if (pos <= i) // Byte has not yet been read
+            if ( pos <= i ) // Byte has not yet been read
             {
-                if (!readByte())
+                if ( !readByte() )
                 {
                     return noMatchEncoding;
                 }
             }
 
-            if (bom[i] != buf[i])
+            if ( bom[i] != buf[i] )
             {
                 return noMatchEncoding;
             }
@@ -221,44 +226,44 @@ public class UnicodeInputStream
     }
 
     private final boolean readByte()
-            throws IOException
+        throws IOException
     {
         int res = inputStream.read();
-        if (res == -1)
+        if ( res == -1 )
         {
             return false;
         }
 
-        if (pos >= buf.length)
+        if ( pos >= buf.length )
         {
-            throw new IOException("BOM read error");
+            throw new IOException( "BOM read error" );
         }
 
         buf[pos++] = (byte) res;
         return true;
     }
 
-    private final void pushback(final UnicodeBOM matchBOM)
+    private final void pushback( final UnicodeBOM matchBOM )
         throws IOException
     {
         int count = pos; // By default, all bytes are pushed back.
         int start = 0;
 
-        if (matchBOM != null && skipBOM)
+        if ( matchBOM != null && skipBOM )
         {
             // We have a match (some bytes are part of the BOM)
             // and we want to skip the BOM. Push back only the bytes
             // after the BOM.
             start = matchBOM.getBytes().length;
-            count = (pos - start);
+            count = ( pos - start );
 
-            if (count < 0)
+            if ( count < 0 )
             {
-                throw new IllegalStateException("Match has more bytes than available!");
+                throw new IllegalStateException( "Match has more bytes than available!" );
             }
         }
 
-        inputStream.unread(buf, start, count);
+        inputStream.unread( buf, start, count );
     }
 
     /**
@@ -282,9 +287,9 @@ public class UnicodeInputStream
     /**
      * @see java.io.InputStream#mark(int)
      */
-    public void mark(final int readlimit)
+    public void mark( final int readlimit )
     {
-        inputStream.mark(readlimit);
+        inputStream.mark( readlimit );
     }
 
     /**
@@ -307,19 +312,19 @@ public class UnicodeInputStream
     /**
      * @see java.io.InputStream#read(byte[])
      */
-    public int read(final byte [] b)
+    public int read( final byte[] b )
         throws IOException
     {
-        return inputStream.read(b);
+        return inputStream.read( b );
     }
 
     /**
      * @see java.io.InputStream#read(byte[], int, int)
      */
-    public int read(final byte [] b, final int off, final int len)
+    public int read( final byte[] b, final int off, final int len )
         throws IOException
     {
-        return inputStream.read(b, off, len);
+        return inputStream.read( b, off, len );
     }
 
     /**
@@ -334,10 +339,10 @@ public class UnicodeInputStream
     /**
      * @see java.io.InputStream#skip(long)
      */
-    public long skip(final long n)
+    public long skip( final long n )
         throws IOException
     {
-        return inputStream.skip(n);
+        return inputStream.skip( n );
     }
 
     /**
@@ -350,9 +355,9 @@ public class UnicodeInputStream
     {
         private final String encoding;
 
-        private final byte [] bytes;
+        private final byte[] bytes;
 
-        private UnicodeBOM(final String encoding, final byte [] bytes)
+        private UnicodeBOM( final String encoding, final byte[] bytes )
         {
             this.encoding = encoding;
             this.bytes = bytes;
@@ -363,7 +368,7 @@ public class UnicodeInputStream
             return encoding;
         }
 
-        byte [] getBytes()
+        byte[] getBytes()
         {
             return bytes;
         }

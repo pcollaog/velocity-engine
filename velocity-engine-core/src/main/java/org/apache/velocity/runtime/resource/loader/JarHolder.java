@@ -24,14 +24,14 @@ import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.Hashtable;
 
-import org.apache.velocity.runtime.RuntimeServices;
-import org.apache.velocity.runtime.log.Log;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.VelocityException;
+import org.apache.velocity.runtime.RuntimeServices;
+import org.apache.velocity.runtime.log.Log;
 
 /**
  * A small wrapper around a Jar

@@ -1,22 +1,18 @@
 package org.apache.velocity.runtime.resource;
 
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for additional information regarding
+ * copyright ownership. The ASF licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 import java.util.Collections;
@@ -25,10 +21,10 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.RuntimeServices;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Default implementation of the resource cache for the default
@@ -44,50 +40,53 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author <a href="mailto:dlr@finemaltcoding.com">Daniel Rall</a>
  * @version $Id$
  */
-public class ResourceCacheImpl implements ResourceCache
+public class ResourceCacheImpl
+    implements ResourceCache
 {
 
-	/**
-	 * A simple LRU Map based on {@link LinkedHashSet}.
-	 *
-	 * @param <K> The key type of the map.
-	 * @param <V> The value type of the map.
-	 */
-	private static class LRUMap<K, V> extends LinkedHashMap<K, V>{
+    /**
+     * A simple LRU Map based on {@link LinkedHashSet}.
+     *
+     * @param <K> The key type of the map.
+     * @param <V> The value type of the map.
+     */
+    private static class LRUMap<K, V>
+        extends LinkedHashMap<K, V>
+    {
 
-		/**
+        /**
          * The serial version uid;
          */
         private static final long serialVersionUID = 5889225121697975043L;
 
-		/**
-		 * The size of the cache.
-		 */
-		private int cacheSize;
+        /**
+         * The size of the cache.
+         */
+        private int cacheSize;
 
-		/**
-		 * Constructor.
-		 *
-		 * @param cacheSize The size of the cache. After reaching this size, the
-		 * eldest-accessed element will be erased.
-		 */
-		public LRUMap(int cacheSize)
+        /**
+         * Constructor.
+         *
+         * @param cacheSize The size of the cache. After reaching this size, the
+         * eldest-accessed element will be erased.
+         */
+        public LRUMap( int cacheSize )
         {
-	        this.cacheSize = cacheSize;
+            this.cacheSize = cacheSize;
         }
 
-		/** {@inheritDoc} */
-		@Override
-        protected boolean removeEldestEntry(Entry<K, V> eldest)
+        /** {@inheritDoc} */
+        @Override
+        protected boolean removeEldestEntry( Entry<K, V> eldest )
         {
-	        return size() > cacheSize;
+            return size() > cacheSize;
         }
-	}
+    }
 
     /**
      * Cache storage, assumed to be thread-safe.
      */
-    protected Map<Object, Resource> cache = new ConcurrentHashMap<Object, Resource>(512, 0.5f, 30);
+    protected Map<Object, Resource> cache = new ConcurrentHashMap<Object, Resource>( 512, 0.5f, 30 );
 
     /**
      * Runtime services, generally initialized by the
@@ -102,18 +101,17 @@ public class ResourceCacheImpl implements ResourceCache
     {
         rsvc = rs;
 
-        int maxSize =
-            rsvc.getInt(RuntimeConstants.RESOURCE_MANAGER_DEFAULTCACHE_SIZE, 89);
-        if (maxSize > 0)
+        int maxSize = rsvc.getInt( RuntimeConstants.RESOURCE_MANAGER_DEFAULTCACHE_SIZE, 89 );
+        if ( maxSize > 0 )
         {
             // Create a whole new Map here to avoid hanging on to a
             // handle to the unsynch'd LRUMap for our lifetime.
-            Map<Object, Resource> lruCache = Collections.synchronizedMap(new LRUMap<Object, Resource>(maxSize));
-            lruCache.putAll(cache);
+            Map<Object, Resource> lruCache = Collections.synchronizedMap( new LRUMap<Object, Resource>( maxSize ) );
+            lruCache.putAll( cache );
             cache = lruCache;
         }
-        rsvc.getLog().debug("ResourceCache: initialized ("+this.getClass()+") with "+
-               cache.getClass()+" cache map.");
+        rsvc.getLog().debug( "ResourceCache: initialized (" + this.getClass() + ") with " + cache.getClass()
+                                 + " cache map." );
     }
 
     /**
@@ -121,7 +119,7 @@ public class ResourceCacheImpl implements ResourceCache
      */
     public Resource get( Object key )
     {
-        return (Resource) cache.get( key );
+        return cache.get( key );
     }
 
     /**
@@ -129,7 +127,7 @@ public class ResourceCacheImpl implements ResourceCache
      */
     public Resource put( Object key, Resource value )
     {
-        return (Resource) cache.put( key, value );
+        return cache.put( key, value );
     }
 
     /**
@@ -137,7 +135,7 @@ public class ResourceCacheImpl implements ResourceCache
      */
     public Resource remove( Object key )
     {
-        return (Resource) cache.remove( key );
+        return cache.remove( key );
     }
 
     /**
@@ -157,4 +155,3 @@ public class ResourceCacheImpl implements ResourceCache
         return cache.keySet().iterator();
     }
 }
-

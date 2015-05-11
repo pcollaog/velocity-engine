@@ -21,6 +21,7 @@ package org.apache.velocity.app.event.implement;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
 import org.apache.velocity.app.event.MethodExceptionEventHandler;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.util.RuntimeServicesAware;

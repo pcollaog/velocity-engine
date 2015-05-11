@@ -20,6 +20,7 @@
 package org.apache.velocity.util.introspection;
 
 import java.util.Iterator;
+
 import org.apache.velocity.runtime.log.Log;
 import org.apache.velocity.runtime.parser.node.PublicFieldExecutor;
 import org.apache.velocity.runtime.parser.node.SetPublicFieldExecutor;
