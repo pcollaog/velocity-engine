@@ -15,8 +15,10 @@ package org.apache.velocity.app;
  * the License.
  */
 
+import static java.lang.reflect.Modifier.isPublic;
+import static java.lang.reflect.Modifier.isStatic;
+
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -159,19 +161,22 @@ public class FieldMethodizer
      *  Method that retrieves all public static fields
      *  in the class we are methodizing.
      */
-    private void inspect( Class clas )
+    private void inspect( Class<?> clas )
     {
         Field[] fields = clas.getFields();
-        for ( int i = 0; i < fields.length; i++ )
+
+        for ( Field field : fields )
         {
             /*
              *  only if public and static
              */
-            int mod = fields[i].getModifiers();
-            if ( Modifier.isStatic( mod ) && Modifier.isPublic( mod ) )
+            int mod = field.getModifiers();
+            if ( isStatic( mod ) && isPublic( mod ) )
             {
-                fieldHash.put( fields[i].getName(), fields[i] );
+                fieldHash.put( field.getName(), field );
             }
+
         }
+
     }
 }

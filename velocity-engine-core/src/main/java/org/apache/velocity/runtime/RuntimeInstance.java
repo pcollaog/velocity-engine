@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.commons.collections.ExtendedProperties;
@@ -514,10 +515,9 @@ public class RuntimeInstance
      */
     public void setProperties( Properties props )
     {
-        Enumeration en = props.keys();
-        while ( en.hasMoreElements() )
+        for ( Entry<Object, Object> entry : props.entrySet() )
         {
-            String key = en.nextElement().toString();
+            String key = entry.getKey().toString();
             setProperty( key, props.get( key ) );
         }
     }
@@ -825,7 +825,8 @@ public class RuntimeInstance
 
     }
 
-    private EventHandler initializeSpecificEventHandler( String classname, String paramName, Class EventHandlerInterface )
+    private EventHandler initializeSpecificEventHandler( String classname, String paramName,
+                                                         Class<?> EventHandlerInterface )
     {
         if ( classname != null && classname.length() > 0 )
         {
@@ -947,28 +948,27 @@ public class RuntimeInstance
          *
          * org.apache.velocity.runtime.directive.Foreach
          */
-        Enumeration directiveClasses = directiveProperties.elements();
-
-        while ( directiveClasses.hasMoreElements() )
+        for ( Object iter : directiveProperties.values() )
         {
-            String directiveClass = (String) directiveClasses.nextElement();
+            String directiveClass = (String) iter;
             loadDirective( directiveClass );
             log.debug( "Loaded System Directive: " + directiveClass );
+
         }
 
         /*
          *  now the user's directives
          */
-
         String[] userdirective = configuration.getStringArray( "userdirective" );
 
-        for ( int i = 0; i < userdirective.length; i++ )
+        for ( String directive : userdirective )
         {
-            loadDirective( userdirective[i] );
+            loadDirective( directive );
             if ( log.isDebugEnabled() )
             {
-                log.debug( "Loaded User Directive: " + userdirective[i] );
+                log.debug( "Loaded User Directive: " + directive );
             }
+
         }
 
     }
