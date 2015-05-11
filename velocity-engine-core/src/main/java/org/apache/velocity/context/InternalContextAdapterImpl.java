@@ -1,22 +1,18 @@
 package org.apache.velocity.context;
 
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.    
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for additional information regarding
+ * copyright ownership. The ASF licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 import java.util.List;
@@ -58,7 +54,8 @@ import org.apache.velocity.util.introspection.IntrospectionCacheData;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id$
  */
-public final class InternalContextAdapterImpl implements InternalContextAdapter
+public final class InternalContextAdapterImpl
+    implements InternalContextAdapter
 {
     /**
      *  the user data Context that we are wrapping
@@ -96,7 +93,7 @@ public final class InternalContextAdapterImpl implements InternalContextAdapter
     {
         context = c;
 
-        if ( !( c instanceof InternalHousekeepingContext ))
+        if ( !( c instanceof InternalHousekeepingContext ) )
         {
             icb = new InternalContextBase();
         }
@@ -105,9 +102,9 @@ public final class InternalContextAdapterImpl implements InternalContextAdapter
             icb = (InternalHousekeepingContext) context;
         }
 
-        if ( c instanceof InternalEventContext)
+        if ( c instanceof InternalEventContext )
         {
-            iec = ( InternalEventContext) context;
+            iec = (InternalEventContext) context;
         }
     }
 
@@ -206,12 +203,12 @@ public final class InternalContextAdapterImpl implements InternalContextAdapter
         icb.icachePut( key, o );
     }
 
-   /**
-    * @see org.apache.velocity.context.InternalHousekeepingContext#setCurrentResource(org.apache.velocity.runtime.resource.Resource)
-    */
+    /**
+     * @see org.apache.velocity.context.InternalHousekeepingContext#setCurrentResource(org.apache.velocity.runtime.resource.Resource)
+     */
     public void setCurrentResource( Resource r )
     {
-        icb.setCurrentResource(r);
+        icb.setCurrentResource( r );
     }
 
     /**
@@ -226,16 +223,16 @@ public final class InternalContextAdapterImpl implements InternalContextAdapter
      * @see org.apache.velocity.context.InternalHousekeepingContext#setMacroLibraries(List)
      * @since 1.6
      */
-    public void setMacroLibraries(List macroLibraries)
+    public void setMacroLibraries( List<String> macroLibraries )
     {
-        icb.setMacroLibraries(macroLibraries);
+        icb.setMacroLibraries( macroLibraries );
     }
 
     /**
      * @see org.apache.velocity.context.InternalHousekeepingContext#getMacroLibraries()
      * @since 1.6
      */
-    public List getMacroLibraries()
+    public List<String> getMacroLibraries()
     {
         return icb.getMacroLibraries();
     }
@@ -245,15 +242,15 @@ public final class InternalContextAdapterImpl implements InternalContextAdapter
     /**
      * @see org.apache.velocity.context.Context#put(java.lang.String, java.lang.Object)
      */
-    public Object put(String key, Object value)
+    public Object put( String key, Object value )
     {
-        return context.put( key , value );
+        return context.put( key, value );
     }
 
     /**
      * @see org.apache.velocity.context.Context#get(java.lang.String)
      */
-    public Object get(String key)
+    public Object get( String key )
     {
         return context.get( key );
     }
@@ -261,7 +258,7 @@ public final class InternalContextAdapterImpl implements InternalContextAdapter
     /**
      * @see org.apache.velocity.context.Context#containsKey(java.lang.Object)
      */
-    public boolean containsKey(Object key)
+    public boolean containsKey( Object key )
     {
         return context.containsKey( key );
     }
@@ -277,11 +274,10 @@ public final class InternalContextAdapterImpl implements InternalContextAdapter
     /**
      * @see org.apache.velocity.context.Context#remove(java.lang.Object)
      */
-    public Object remove(Object key)
+    public Object remove( Object key )
     {
         return context.remove( key );
     }
-
 
     /* ---- InternalWrapperContext --- */
 
@@ -314,7 +310,7 @@ public final class InternalContextAdapterImpl implements InternalContextAdapter
      */
     public EventCartridge attachEventCartridge( EventCartridge ec )
     {
-        if (iec != null)
+        if ( iec != null )
         {
             return iec.attachEventCartridge( ec );
         }
@@ -327,9 +323,9 @@ public final class InternalContextAdapterImpl implements InternalContextAdapter
      */
     public EventCartridge getEventCartridge()
     {
-        if ( iec != null)
+        if ( iec != null )
         {
-            return iec.getEventCartridge( );
+            return iec.getEventCartridge();
         }
 
         return null;

@@ -1,22 +1,18 @@
 package org.apache.velocity.context;
 
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.    
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for additional information regarding
+ * copyright ownership. The ASF licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 import java.util.List;
@@ -39,20 +35,21 @@ import org.apache.velocity.util.introspection.IntrospectionCacheData;
  * @version $Id: ChainedInternalContextAdapter.java 685724 2008-08-13 23:12:12Z nbubna $
  * @since 1.6
  */
-public abstract class ChainedInternalContextAdapter implements InternalContextAdapter
+public abstract class ChainedInternalContextAdapter
+    implements InternalContextAdapter
 {
     /** the parent context */
     protected InternalContextAdapter wrappedContext = null;
-    
+
     /**
      * CTOR, wraps an ICA
      * @param inner context
      */
-    public ChainedInternalContextAdapter(InternalContextAdapter inner)
+    public ChainedInternalContextAdapter( InternalContextAdapter inner )
     {
         wrappedContext = inner;
     }
-    
+
     /**
      * Return the inner / user context.
      * @return The inner / user context.
@@ -76,9 +73,9 @@ public abstract class ChainedInternalContextAdapter implements InternalContextAd
      * @param key name of item to get
      * @return  stored object or null
      */
-    public Object get(String key)
+    public Object get( String key )
     {
-        return wrappedContext.get(key);
+        return wrappedContext.get( key );
     }
 
     /**
@@ -88,20 +85,20 @@ public abstract class ChainedInternalContextAdapter implements InternalContextAd
      * @param value object to set to key
      * @return old stored object
      */
-    public Object put(String key, Object value)
+    public Object put( String key, Object value )
     {
         /*
          * just put in the local context
          */
-        return wrappedContext.put(key, value);
+        return wrappedContext.put( key, value );
     }
 
     /**
      * @see org.apache.velocity.context.Context#containsKey(java.lang.Object)
      */
-    public boolean containsKey(Object key)
+    public boolean containsKey( Object key )
     {
-        return wrappedContext.containsKey(key);
+        return wrappedContext.containsKey( key );
     }
 
     /**
@@ -115,17 +112,17 @@ public abstract class ChainedInternalContextAdapter implements InternalContextAd
     /**
      * @see org.apache.velocity.context.Context#remove(java.lang.Object)
      */
-    public Object remove(Object key)
+    public Object remove( Object key )
     {
-        return wrappedContext.remove(key);
+        return wrappedContext.remove( key );
     }
 
     /**
      * @see org.apache.velocity.context.InternalHousekeepingContext#pushCurrentTemplateName(java.lang.String)
      */
-    public void pushCurrentTemplateName(String s)
+    public void pushCurrentTemplateName( String s )
     {
-        wrappedContext.pushCurrentTemplateName(s);
+        wrappedContext.pushCurrentTemplateName( s );
     }
 
     /**
@@ -155,9 +152,9 @@ public abstract class ChainedInternalContextAdapter implements InternalContextAd
     /**
      * @see org.apache.velocity.context.InternalHousekeepingContext#pushCurrentMacroName(java.lang.String)
      */
-    public void pushCurrentMacroName(String s)
+    public void pushCurrentMacroName( String s )
     {
-        wrappedContext.pushCurrentMacroName(s);
+        wrappedContext.pushCurrentMacroName( s );
     }
 
     /**
@@ -195,31 +192,31 @@ public abstract class ChainedInternalContextAdapter implements InternalContextAd
     /**
      * @see org.apache.velocity.context.InternalHousekeepingContext#icacheGet(java.lang.Object)
      */
-    public IntrospectionCacheData icacheGet(Object key)
+    public IntrospectionCacheData icacheGet( Object key )
     {
-        return wrappedContext.icacheGet(key);
+        return wrappedContext.icacheGet( key );
     }
 
     /**
      * @see org.apache.velocity.context.InternalHousekeepingContext#icachePut(java.lang.Object, org.apache.velocity.util.introspection.IntrospectionCacheData)
      */
-    public void icachePut(Object key, IntrospectionCacheData o)
+    public void icachePut( Object key, IntrospectionCacheData o )
     {
-        wrappedContext.icachePut(key, o);
+        wrappedContext.icachePut( key, o );
     }
 
     /**
      * @see org.apache.velocity.context.InternalHousekeepingContext#setMacroLibraries(List)
      */
-    public void setMacroLibraries(List macroLibraries)
+    public void setMacroLibraries( List<String> macroLibraries )
     {
-        wrappedContext.setMacroLibraries(macroLibraries);
+        wrappedContext.setMacroLibraries( macroLibraries );
     }
-    
+
     /**
      * @see org.apache.velocity.context.InternalHousekeepingContext#getMacroLibraries()
      */
-    public List getMacroLibraries()
+    public List<String> getMacroLibraries()
     {
         return wrappedContext.getMacroLibraries();
     }
@@ -227,9 +224,9 @@ public abstract class ChainedInternalContextAdapter implements InternalContextAd
     /**
      * @see org.apache.velocity.context.InternalEventContext#attachEventCartridge(org.apache.velocity.app.event.EventCartridge)
      */
-    public EventCartridge attachEventCartridge(EventCartridge ec)
+    public EventCartridge attachEventCartridge( EventCartridge ec )
     {
-        return wrappedContext.attachEventCartridge(ec);
+        return wrappedContext.attachEventCartridge( ec );
     }
 
     /**
@@ -240,13 +237,12 @@ public abstract class ChainedInternalContextAdapter implements InternalContextAd
         return wrappedContext.getEventCartridge();
     }
 
-
     /**
      * @see org.apache.velocity.context.InternalHousekeepingContext#setCurrentResource(org.apache.velocity.runtime.resource.Resource)
      */
-    public void setCurrentResource(Resource r)
+    public void setCurrentResource( Resource r )
     {
-        wrappedContext.setCurrentResource(r);
+        wrappedContext.setCurrentResource( r );
     }
 
     /**

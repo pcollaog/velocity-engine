@@ -55,12 +55,12 @@ class InternalContextBase
     /**
      *  Template name stack. The stack top contains the current template name.
      */
-    private Stack templateNameStack = new Stack();
+    private Stack<String> templateNameStack = new Stack<String>();
 
     /**
      *  Velocimacro name stack. The stack top contains the current macro name.
      */
-    private Stack macroNameStack = new Stack();
+    private Stack<String> macroNameStack = new Stack<String>();
 
     /**
      *  EventCartridge we are to carry.  Set by application
@@ -77,7 +77,7 @@ class InternalContextBase
      *  List for holding the macro libraries. Contains the macro library
      *  template name as strings.
      */
-    private List macroLibraries = null;
+    private List<String> macroLibraries = null;
 
     /**
      *  set the current template name on top of stack
@@ -107,7 +107,7 @@ class InternalContextBase
         if ( templateNameStack.empty() )
             return "<undef>";
         else
-            return (String) templateNameStack.peek();
+            return templateNameStack.peek();
     }
 
     /**
@@ -151,7 +151,7 @@ class InternalContextBase
         }
         else
         {
-            return (String) macroNameStack.peek();
+            return macroNameStack.peek();
         }
     }
 
@@ -218,7 +218,7 @@ class InternalContextBase
     /**
      * @see org.apache.velocity.context.InternalHousekeepingContext#setMacroLibraries(List)
      */
-    public void setMacroLibraries( List macroLibraries )
+    public void setMacroLibraries( List<String> macroLibraries )
     {
         this.macroLibraries = macroLibraries;
     }
@@ -226,7 +226,7 @@ class InternalContextBase
     /**
      * @see org.apache.velocity.context.InternalHousekeepingContext#getMacroLibraries()
      */
-    public List getMacroLibraries()
+    public List<String> getMacroLibraries()
     {
         return macroLibraries;
     }
