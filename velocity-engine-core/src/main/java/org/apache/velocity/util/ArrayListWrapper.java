@@ -29,7 +29,7 @@ import java.util.AbstractList;
  * @version $Revision$ $Date: 2006-04-14 19:40:41 $
  * @since 1.6
  */
-public class ArrayListWrapper extends AbstractList
+public class ArrayListWrapper extends AbstractList<Object>
 {
     private Object array;
 

@@ -19,6 +19,8 @@ package org.apache.velocity.runtime.resource.loader;
  * under the License.
  */
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,7 +55,7 @@ public class FileResourceLoader extends ResourceLoader
     /**
      * The paths to search for templates.
      */
-    private List paths = new ArrayList();
+    private List<String> paths = new ArrayList<String>(); 
 
     /**
      * Used to map the path that a template was found on
@@ -61,7 +63,8 @@ public class FileResourceLoader extends ResourceLoader
      * times of the files. This is synchronizedMap
      * instance.
      */
-    private Map templatePaths = Collections.synchronizedMap(new HashMap());
+	private Map<String, String> templatePaths = Collections
+			.synchronizedMap(new HashMap<String, String>());
 
     /** Shall we inspect unicode files to see what encoding they contain?. */
     private boolean unicode = false;
@@ -94,11 +97,10 @@ public class FileResourceLoader extends ResourceLoader
             StringUtils.trimStrings(paths);
 
             // this section lets tell people what paths we will be using
-            int sz = paths.size();
-            for( int i=0; i < sz; i++)
-            {
-                log.debug("FileResourceLoader : adding path '" + (String) paths.get(i) + "'");
-            }
+            for (String path : paths)
+			{
+				log.debug("FileResourceLoader : adding path '" + path + "'");
+			}
             log.trace("FileResourceLoader : initialization complete.");
         }
     }
@@ -118,7 +120,7 @@ public class FileResourceLoader extends ResourceLoader
         /*
          * Make sure we have a valid templateName.
          */
-        if (org.apache.commons.lang3.StringUtils.isEmpty(templateName))
+        if (isEmpty(templateName))
         {
             /*
              * If we don't get a properly formed templateName then
@@ -140,35 +142,31 @@ public class FileResourceLoader extends ResourceLoader
 
             throw new ResourceNotFoundException ( msg );
         }
+        
+        for (String path : paths)
+		{
+			InputStream inputStream = null;
 
-        int size = paths.size();
-        for (int i = 0; i < size; i++)
-        {
-            String path = (String) paths.get(i);
-            InputStream inputStream = null;
+			try
+			{
+				inputStream = findTemplate(path, template);
+			} catch (IOException ioe)
+			{
+				String msg = "Exception while loading Template " + template;
+				log.error(msg, ioe);
+				throw new VelocityException(msg, ioe);
+			}
 
-            try
-            {
-                inputStream = findTemplate(path, template);
-            }
-            catch (IOException ioe)
-            {
-                String msg = "Exception while loading Template " + template;
-                log.error(msg, ioe);
-                throw new VelocityException(msg, ioe);
-            }
-
-            if (inputStream != null)
-            {
-                /*
-                 * Store the path that this template came
-                 * from so that we can check its modification
-                 * time.
-                 */
-                templatePaths.put(templateName, path);
-                return inputStream;
-            }
-        }
+			if (inputStream != null)
+			{
+				/*
+				 * Store the path that this template came from so that we can
+				 * check its modification time.
+				 */
+				templatePaths.put(templateName, path);
+				return inputStream;
+			}
+		}
 
         /*
          * We have now searched all the paths for
@@ -194,24 +192,22 @@ public class FileResourceLoader extends ResourceLoader
             return false;
         }
 
-        int size = paths.size();
-        for (int i = 0; i < size; i++)
-        {
-            String path = (String)paths.get(i);
-            try
-            {
-                File file = getFile(path, name);
-                if (file.canRead())
-                {
-                    return true;
-                }
-            }
-            catch (Exception ioe)
-            {
-                String msg = "Exception while checking for template " + name;
-                log.debug(msg, ioe);
-            }
-        }
+        for (String path : paths)
+		{
+			try
+			{
+				File file = getFile(path, name);
+				if (file.canRead())
+				{
+					return true;
+				}
+			} catch (Exception ioe)
+			{
+				String msg = "Exception while checking for template " + name;
+				log.debug(msg, ioe);
+			}
+
+		}
         return false;
     }
 
@@ -318,12 +314,12 @@ public class FileResourceLoader extends ResourceLoader
         boolean modified = true;
 
         String fileName = resource.getName();
-        String path = (String) templatePaths.get(fileName);
+        String path = templatePaths.get(fileName);
         File currentFile = null;
 
         for (int i = 0; currentFile == null && i < paths.size(); i++)
         {
-            String testPath = (String) paths.get(i);
+            String testPath = paths.get(i);
             File testFile = getFile(testPath, fileName);
             if (testFile.canRead())
             {
@@ -364,7 +360,7 @@ public class FileResourceLoader extends ResourceLoader
      */
     public long getLastModified(Resource resource)
     {
-        String path = (String) templatePaths.get(resource.getName());
+        String path = templatePaths.get(resource.getName());
         File file = getFile(path, resource.getName());
 
         if (file.canRead())

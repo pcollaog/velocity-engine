@@ -42,7 +42,7 @@ public interface IntrospectorCache {
      * @param c The class to look up.
      * @return A ClassMap object or null if it does not exist in the cache.
      */
-    ClassMap get(Class c);
+    ClassMap get(Class<?> c);
 
     /**
      * Lookup a given Class object in the cache. If it does not exist,
@@ -52,7 +52,7 @@ public interface IntrospectorCache {
      * @param c The class to look up.
      * @return A ClassFieldMap object or null if it does not exist in the cache.
      */
-    ClassFieldMap getFieldMap(final Class c);
+    ClassFieldMap getFieldMap(final Class<?> c);
 
     /**
      * Creates a class map for specific class and registers it in the
@@ -62,6 +62,6 @@ public interface IntrospectorCache {
      * @param c The class for which the class map gets generated.
      * @return A ClassMap object.
      */
-    ClassMap put(Class c);
+    ClassMap put(Class<?> c);
 
 }

@@ -24,6 +24,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.velocity.runtime.log.Log;
 
 /**
@@ -50,18 +51,18 @@ public class ClassFieldMap
      * Class passed into the constructor used to as
      * the basis for the Field map.
      */
-    private final Class clazz;
+    private final Class<?> clazz;
 
     /**
      * String --&gt; Field map, the key is the field name
      */
-    private final Map fieldCache;
+    private final Map<String, Field> fieldCache;
 
     /**
      * Standard constructor
      * @param clazz The class for which this ClassMap gets constructed.
      */
-    public ClassFieldMap(final Class clazz, final Log log)
+    public ClassFieldMap(final Class<?> clazz, final Log log)
     {
         this.clazz = clazz;
         this.log = log;
@@ -85,7 +86,7 @@ public class ClassFieldMap
      *
      * @return The class object whose fields are cached by this map.
      */
-    public Class getCachedClass()
+    public Class<?> getCachedClass()
     {
         return clazz;
     }
@@ -98,7 +99,7 @@ public class ClassFieldMap
      */
     public Field findField(final String name)
     {
-        return (Field)fieldCache.get(name);
+        return fieldCache.get(name);
     }
 
     /**
@@ -106,46 +107,48 @@ public class ClassFieldMap
      * are taken from all the public fields
      * that our class, its parents and their implemented interfaces provide.
      */
-    private Map createFieldCache()
+    private Map<String, Field> createFieldCache()
     {
-        Map fieldCache = new ConcurrentHashMap();
+        Map<String, Field> fieldCache = new ConcurrentHashMap<String, Field>();
 	//
 	// Looks through all elements in the class hierarchy.
 	//
 	// We ignore all SecurityExceptions that might happen due to SecurityManager restrictions (prominently
 	// hit with Tomcat 5.5).
         // Ah, the miracles of Java for(;;) ...
-        for (Class classToReflect = getCachedClass(); classToReflect != null ; classToReflect = classToReflect.getSuperclass())
+        for (Class<?> classToReflect = getCachedClass(); classToReflect != null ; classToReflect = classToReflect.getSuperclass())
         {
             if (Modifier.isPublic(classToReflect.getModifiers()))
             {
                 populateFieldCacheWith(fieldCache, classToReflect);
             }
-            Class [] interfaces = classToReflect.getInterfaces();
-            for (int i = 0; i < interfaces.length; i++)
-            {
-                populateFieldCacheWithInterface(fieldCache, interfaces[i]);
-            }
+            
+            Class<?>[] interfaces = classToReflect.getInterfaces();
+            for (Class<?> interfaceClass : interfaces)
+			{
+                populateFieldCacheWithInterface(fieldCache, interfaceClass);
+			}
         }
         // return the already initialized cache
         return fieldCache;
     }
 
     /* recurses up interface heirarchy to get all super interfaces (VELOCITY-689) */
-    private void populateFieldCacheWithInterface(Map fieldCache, Class iface)
+    private void populateFieldCacheWithInterface(Map<String, Field> fieldCache, Class<?> iface)
     {
         if (Modifier.isPublic(iface.getModifiers()))
         {
             populateFieldCacheWith(fieldCache, iface);
         }
-        Class[] supers = iface.getInterfaces();
-        for (int i=0; i < supers.length; i++)
-        {
-            populateFieldCacheWithInterface(fieldCache, supers[i]);
-        }
+        Class<?>[] supers = iface.getInterfaces();
+        for (Class<?> superInterfaceClass : supers)
+		{
+			populateFieldCacheWithInterface(fieldCache, superInterfaceClass);
+
+		}
     }
 
-    private void populateFieldCacheWith(Map fieldCache, Class classToReflect)
+    private void populateFieldCacheWith(Map<String, Field> fieldCache, Class<?> classToReflect)
     {
         if (debugReflection && log.isDebugEnabled())
         {
@@ -153,17 +156,17 @@ public class ClassFieldMap
         }
 
         try
-        {
-            Field[] fields = classToReflect.getDeclaredFields();
-            for (int i = 0; i < fields.length; i++)
-            {
-                int modifiers = fields[i].getModifiers();
-                if (Modifier.isPublic(modifiers))
-                {
-                    fieldCache.put(fields[i].getName(), fields[i]);
-                }
-            }
-        }
+		{
+			Field[] fields = classToReflect.getDeclaredFields();
+			for (Field field : fields)
+			{
+				int modifiers = field.getModifiers();
+				if (Modifier.isPublic(modifiers))
+				{
+					fieldCache.put(field.getName(), field);
+				}
+			}
+		}
         catch (SecurityException se) // Everybody feels better with...
         {
             if (log.isDebugEnabled())

@@ -41,7 +41,7 @@ public interface Uberspect
      * @param info
      * @return An Iterator.
      */
-    public Iterator getIterator(Object obj, Info info);
+    public Iterator<Object> getIterator(Object obj, Info info);
 
     /**
      *  Returns a general method, corresponding to $foo.bar( $woogie )

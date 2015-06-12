@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -54,17 +53,17 @@ public class StringUtils
      * @param list The list of objects to concatenate.
      * @return     A text representation of the concatenated objects.
      */
-    public String concat(List list)
-    {
-        StringBuffer sb = new StringBuffer();
-        int size = list.size();
+    public String concat(List<Object> list)
+	{
+		StringBuffer sb = new StringBuffer();
 
-        for (int i = 0; i < size; i++)
-        {
-            sb.append(list.get(i).toString());
-        }
-        return sb.toString();
-    }
+		for (Object object : list)
+		{
+			sb.append(object);
+		}
+
+		return sb.toString();
+	}
 
     /**
      * Return a package name as a relative path name
@@ -181,13 +180,13 @@ public class StringUtils
      */
     public static String [] split(String line, String delim)
     {
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         StringTokenizer t = new StringTokenizer(line, delim);
         while (t.hasMoreTokens())
         {
             list.add(t.nextToken());
         }
-        return (String []) list.toArray(new String[list.size()]);
+        return list.toArray(new String[list.size()]);
     }
 
     /**
@@ -247,17 +246,6 @@ public class StringUtils
     }
 
     /**
-     * @param argStr
-     * @param vars
-     * @return Substituted String.
-     */
-    public static StringBuffer stringSubstitution( String argStr,
-                                                   Hashtable vars )
-    {
-        return stringSubstitution( argStr, (Map) vars );
-    }
-
-    /**
      * Perform a series of substitutions. The substitions
      * are performed by replacing $variable in the target
      * string with the value of provided by the key "variable"
@@ -268,7 +256,7 @@ public class StringUtils
      * @return String target string with replacements.
      */
     public static StringBuffer stringSubstitution(String argStr,
-            Map vars)
+            Map<String, String> vars)
     {
         StringBuffer argBuf = new StringBuffer();
 
@@ -291,8 +279,7 @@ public class StringUtils
 
                     if (nameBuf.length() > 0)
                     {
-                        String value =
-                                (String) vars.get(nameBuf.toString());
+                        String value = vars.get(nameBuf.toString());
 
                         if (value != null)
                         {
@@ -561,19 +548,17 @@ public class StringUtils
      * @param list A list of {@link java.lang.String} objects.
      * @return     Whether all strings are empty.
      */
-    public boolean allEmpty(List list)
-    {
-        int size = list.size();
-
-        for (int i = 0; i < size; i++)
-        {
-            if (list.get(i) != null && list.get(i).toString().length() > 0)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+    public boolean allEmpty(List<String> list)
+	{
+		for (String s : list)
+		{
+			if (s != null && s.length() > 0)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 
     /**
      * Trim all strings in a List.  Changes the strings in the existing list.
@@ -581,16 +566,18 @@ public class StringUtils
      * @return List of trimmed strings.
      * @since 1.5
      */
-    public static List trimStrings(List list)
-    {
-        if (list == null)
-            return null;
+    public static List<String> trimStrings(List<String> list)
+	{
+		if (list == null)
+			return null;
 
-        int sz = list.size();
-        for (int i = 0; i < sz; i++)
-            list.set(i,nullTrim((String) list.get(i)));
-        return list;
-    }
+		int sz = list.size();
+		for (int i = 0; i < sz; i++)
+		{
+			list.set(i, nullTrim(list.get(i)));
+		}
+		return list;
+	}
 
     /**
      * Trim the string, but pass a null through.

@@ -60,7 +60,7 @@ public class ClassUtils {
      * @return the requested Class object
      * @throws ClassNotFoundException
      */
-    public static Class getClass(String clazz) throws ClassNotFoundException
+    public static Class<?> getClass(String clazz) throws ClassNotFoundException
     {
         /**
          * Use the Thread context classloader if possible
@@ -115,7 +115,7 @@ public class ClassUtils {
      * @param name name of the resource
      * @return InputStream for the resource.
      */
-    public static InputStream getResourceAsStream(Class claz, String name)
+    public static InputStream getResourceAsStream(Class<?> claz, String name)
     {
         InputStream result = null;
 
@@ -170,7 +170,7 @@ public class ClassUtils {
    * @return VelMethod object if the object is found, null if not matching method is found
    */    
   public static VelMethod getMethod(String methodName, Object[] params,
-                                    Class[] paramClasses, Object o, InternalContextAdapter context,
+                                    Class<?>[] paramClasses, Object o, InternalContextAdapter context,
                                     SimpleNode node, boolean strictRef)
   {
     VelMethod method = null;
@@ -224,7 +224,7 @@ public class ClassUtils {
           StringBuffer plist = new StringBuffer();
           for (int i = 0; i < params.length; i++)
           {
-            Class param = paramClasses[i];
+            Class<?> param = paramClasses[i];
             plist.append(param == null ? "null" : param.getName());
             if (i < params.length - 1)
               plist.append(", ");

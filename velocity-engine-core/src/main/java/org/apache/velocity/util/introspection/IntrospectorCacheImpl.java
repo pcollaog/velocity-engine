@@ -48,12 +48,12 @@ public final class IntrospectorCacheImpl implements IntrospectorCache
     /**
      * Holds the method maps for the classes we know about. Map: Class --&gt; ClassMap object.
      */
-    private final Map classMapCache = new HashMap();
+    private final Map<Class<?>, ClassMap> classMapCache = new HashMap<Class<?>, ClassMap>();
 
     /**
      * Holds the field maps for the classes we know about. Map: Class --&gt; ClassFieldMap object.
      */
-    private final Map classFieldMapCache = new HashMap();
+    private final Map<Class<?>, ClassFieldMap> classFieldMapCache = new HashMap<Class<?>, ClassFieldMap>();
 
     /**
      * Keep the names of the classes in another map. This is needed for a multi-classloader environment where it is possible
@@ -61,7 +61,7 @@ public final class IntrospectorCacheImpl implements IntrospectorCache
      * two Class objects have the same name, a <code>classMethodMaps.get(Foo.class)</code> will return null. For that case, we
      * keep a set of class names to recognize this case.  
      */
-    private final Set classNameCache = new HashSet();
+    private final Set<String> classNameCache = new HashSet<String>();
 
     /**
      * C'tor
@@ -93,14 +93,14 @@ public final class IntrospectorCacheImpl implements IntrospectorCache
      * @param c The class to look up.
      * @return A ClassMap object or null if it does not exist in the cache.
      */
-    public ClassMap get(final Class c)
+    public ClassMap get(final Class<?> c)
     {
         if (c == null)
         {
             throw new IllegalArgumentException("class is null!");
         }
 
-        ClassMap classMap = (ClassMap)classMapCache.get(c);
+        ClassMap classMap = classMapCache.get(c);
         if (classMap == null)
         {
             /*
@@ -128,14 +128,14 @@ public final class IntrospectorCacheImpl implements IntrospectorCache
      * @param c The class to look up.
      * @return A ClassFieldMap object or null if it does not exist in the cache.
      */
-    public ClassFieldMap getFieldMap(final Class c)
+    public ClassFieldMap getFieldMap(final Class<?> c)
     {
         if (c == null)
         {
             throw new IllegalArgumentException("class is null!");
         }
 
-        ClassFieldMap classFieldMap = (ClassFieldMap)classFieldMapCache.get(c);
+        ClassFieldMap classFieldMap = classFieldMapCache.get(c);
         if (classFieldMap == null)
         {
             /*
@@ -163,7 +163,7 @@ public final class IntrospectorCacheImpl implements IntrospectorCache
      * @param c The class for which the class map gets generated.
      * @return A ClassMap object.
      */
-    public ClassMap put(final Class c)
+    public ClassMap put(final Class<?> c)
     {
         final ClassMap classMap = new ClassMap(c, log);
         final ClassFieldMap classFieldMap = new ClassFieldMap(c, log);

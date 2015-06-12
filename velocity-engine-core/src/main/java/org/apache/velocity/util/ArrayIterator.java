@@ -42,7 +42,7 @@ import java.lang.reflect.Array;
  * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
  * @version $Id$
  */
-public class ArrayIterator implements Iterator
+public class ArrayIterator implements Iterator<Object>
 {
     /**
      * The objects to iterate.

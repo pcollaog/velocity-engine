@@ -92,7 +92,7 @@ public class UberspectImpl implements Uberspect, UberspectLoggable
      * @param i Info about the object's location.
      * @return An {@link Iterator} object.
      */
-    public Iterator getIterator(Object obj, Info i)
+    public Iterator<Object> getIterator(Object obj, Info i)
     {
         if (obj.getClass().isArray())
         {
@@ -100,7 +100,7 @@ public class UberspectImpl implements Uberspect, UberspectLoggable
         }
         else if (obj instanceof Collection)
         {
-            return ((Collection) obj).iterator();
+            return ((Collection<Object>) obj).iterator();
         }
         else if (obj instanceof Map)
         {
@@ -115,7 +115,7 @@ public class UberspectImpl implements Uberspect, UberspectLoggable
                            "it is not resettable, if used in more than once it " +
                            "may lead to unexpected results.");
             }
-            return ((Iterator) obj);
+            return ((Iterator<Object>) obj);
         }
         else if (obj instanceof Enumeration)
         {
@@ -126,23 +126,23 @@ public class UberspectImpl implements Uberspect, UberspectLoggable
                            "it is not resettable, if used in more than once it " +
                            "may lead to unexpected results.");
             }
-            return new EnumerationIterator((Enumeration) obj);
+            return new EnumerationIterator((Enumeration<Object>) obj);
         }
         else
         {
             // look for an iterator() method to support the JDK5 Iterable
             // interface or any user tools/DTOs that want to work in
             // foreach without implementing the Collection interface
-            Class type = obj.getClass();
+            Class<?> type = obj.getClass();
             try
             {
                 Method iter = type.getMethod("iterator");
-                Class returns = iter.getReturnType();
+                Class<?> returns = iter.getReturnType();
                 if (Iterator.class.isAssignableFrom(returns))
                 {
                     try
                     {
-                        return (Iterator)iter.invoke(obj);
+                        return (Iterator<Object>)iter.invoke(obj);
                     } 
                     catch (Exception e)
                     {
@@ -189,7 +189,7 @@ public class UberspectImpl implements Uberspect, UberspectLoggable
             return new VelMethodImpl(m);
         }
 
-        Class cls = obj.getClass();
+        Class<?> cls = obj.getClass();
         // if it's an array
         if (cls.isArray())
         {
@@ -205,7 +205,7 @@ public class UberspectImpl implements Uberspect, UberspectLoggable
         // watch for classes, to allow calling their static methods (VELOCITY-102)
         else if (cls == Class.class)
         {
-            m = introspector.getMethod((Class)obj, methodName, args);
+            m = introspector.getMethod((Class<?>)obj, methodName, args);
             if (m != null)
             {
                 return new VelMethodImpl(m);
@@ -228,7 +228,7 @@ public class UberspectImpl implements Uberspect, UberspectLoggable
             return null;
         }
 
-        Class claz = obj.getClass();
+        Class<?> claz = obj.getClass();
 
         /*
          *  first try for a getFoo() type of property
@@ -282,7 +282,7 @@ public class UberspectImpl implements Uberspect, UberspectLoggable
             return null;
         }
 
-        Class claz = obj.getClass();
+        Class<?> claz = obj.getClass();
 
         /*
          *  first try for a setFoo() type of property
@@ -354,11 +354,11 @@ public class UberspectImpl implements Uberspect, UberspectLoggable
 
             if (isVarArg())
             {
-                Class[] formal = method.getParameterTypes();
+                Class<?>[] formal = method.getParameterTypes();
                 int index = formal.length - 1;
                 if (actual.length >= index)
                 {
-                    Class type = formal[index].getComponentType();
+                    Class<?> type = formal[index].getComponentType();
                     actual = handleVarArg(type, index, actual);
                 }
             }
@@ -387,14 +387,14 @@ public class UberspectImpl implements Uberspect, UberspectLoggable
         {
             if (isVarArg == null)
             {
-                Class[] formal = method.getParameterTypes();
+                Class<?>[] formal = method.getParameterTypes();
                 if (formal == null || formal.length == 0)
                 {
                     this.isVarArg = Boolean.FALSE;
                 }
                 else
                 {
-                    Class last = formal[formal.length - 1];
+                    Class<?> last = formal[formal.length - 1];
                     // if the last arg is an array, then
                     // we consider this a varargs method
                     this.isVarArg = Boolean.valueOf(last.isArray());
@@ -413,7 +413,7 @@ public class UberspectImpl implements Uberspect, UberspectLoggable
          * @returns The actual parameters adjusted for the varargs in order
          *          to fit the method declaration.
          */
-        private Object[] handleVarArg(final Class type,
+        private Object[] handleVarArg(final Class<?> type,
                                       final int index,
                                       Object[] actual)
         {
@@ -431,7 +431,7 @@ public class UberspectImpl implements Uberspect, UberspectLoggable
             else if (actual.length == index + 1 && actual[index] != null)
             {
                 // make sure the last arg is an array of the expected type
-                Class argClass = actual[index].getClass();
+                Class<?> argClass = actual[index].getClass();
                 if (!argClass.isArray() &&
                     IntrospectionUtils.isMethodInvocationConvertible(type,
                                                                      argClass,
@@ -487,7 +487,7 @@ public class UberspectImpl implements Uberspect, UberspectLoggable
         /**
          * @see org.apache.velocity.util.introspection.VelMethod#getReturnType()
          */
-        public Class getReturnType()
+        public Class<?> getReturnType()
         {
             return method.getReturnType();
         }

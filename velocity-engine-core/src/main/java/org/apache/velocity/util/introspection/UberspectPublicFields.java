@@ -82,7 +82,7 @@ public class UberspectPublicFields implements Uberspect, UberspectLoggable
             return null;
         }
 
-        Class claz = obj.getClass();
+        Class<?> claz = obj.getClass();
 
         PublicFieldExecutor executor = new PublicFieldExecutor(log, introspector, claz, identifier);
 
@@ -105,14 +105,14 @@ public class UberspectPublicFields implements Uberspect, UberspectLoggable
             return null;
         }
 
-        Class claz = obj.getClass();
+        Class<?> claz = obj.getClass();
 
         SetPublicFieldExecutor executor = new SetPublicFieldExecutor(log, introspector, claz, identifier, arg);
 
         return (executor.isAlive()) ? new VelSetterImpl(executor) : null;
     }
 
-    public Iterator getIterator(Object obj, Info info)
+    public Iterator<Object> getIterator(Object obj, Info info)
     {
         return null;
     }

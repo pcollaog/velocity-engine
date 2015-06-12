@@ -61,5 +61,5 @@ public interface VelMethod
      *  returns the return type of the method invoked
      * @return The return type of the method invoked
      */
-    public Class getReturnType();
+    public Class<?> getReturnType();
 }

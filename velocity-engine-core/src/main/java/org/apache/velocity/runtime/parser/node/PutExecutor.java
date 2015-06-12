@@ -50,7 +50,7 @@ public class PutExecutor extends SetExecutor
      * @param property
      */
     public PutExecutor(final Log log, final Introspector introspector,
-            final Class clazz, final Object arg, final String property)
+            final Class<?> clazz, final Object arg, final String property)
     {
         this.log = log;
         this.introspector = introspector;
@@ -63,7 +63,7 @@ public class PutExecutor extends SetExecutor
      * @param clazz
      * @param arg
      */
-    protected void discover(final Class clazz, final Object arg)
+    protected void discover(final Class<?> clazz, final Object arg)
     {
         Object [] params;
 

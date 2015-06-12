@@ -19,11 +19,13 @@ package org.apache.velocity.util.introspection;
  * under the License.
  */
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.velocity.runtime.log.Log;
 
 /**
@@ -51,7 +53,7 @@ public class ClassMap
      * Class passed into the constructor used to as
      * the basis for the Method map.
      */
-    private final Class clazz;
+    private final Class<?> clazz;
 
     private final MethodCache methodCache;
 
@@ -59,7 +61,7 @@ public class ClassMap
      * Standard constructor
      * @param clazz The class for which this ClassMap gets constructed.
      */
-    public ClassMap(final Class clazz, final Log log)
+    public ClassMap(final Class<?> clazz, final Log log)
     {
         this.clazz = clazz;
         this.log = log;
@@ -83,7 +85,7 @@ public class ClassMap
      *
      * @return The class object whose methods are cached by this map.
      */
-    public Class getCachedClass()
+    public Class<?> getCachedClass()
     {
         return clazz;
     }
@@ -130,11 +132,11 @@ public class ClassMap
             {
                 populateMethodCacheWith(methodCache, classToReflect);
             }
-            Class [] interfaces = classToReflect.getInterfaces();
-            for (int i = 0; i < interfaces.length; i++)
-            {
-                populateMethodCacheWithInterface(methodCache, interfaces[i]);
-            }
+            
+            for (Class<?> interfaceClass : classToReflect.getInterfaces())
+			{
+            	populateMethodCacheWithInterface(methodCache, interfaceClass);
+			}
         }
         // return the already initialized cache
         return methodCache;
@@ -147,11 +149,11 @@ public class ClassMap
         {
             populateMethodCacheWith(methodCache, iface);
         }
-        Class[] supers = iface.getInterfaces();
-        for (int i=0; i < supers.length; i++)
-        {
-            populateMethodCacheWithInterface(methodCache, supers[i]);
-        }
+       
+        for (Class<?> superInterface : iface.getInterfaces())
+		{
+        	populateMethodCacheWithInterface(methodCache, superInterface);
+		}
     }
 
     private void populateMethodCacheWith(MethodCache methodCache, Class classToReflect)
@@ -163,15 +165,14 @@ public class ClassMap
 
         try
         {
-            Method[] methods = classToReflect.getDeclaredMethods();
-            for (int i = 0; i < methods.length; i++)
-            {
-                int modifiers = methods[i].getModifiers();
-                if (Modifier.isPublic(modifiers))
-                {
-                    methodCache.put(methods[i]);
-                }
-            }
+            for (Method method : classToReflect.getDeclaredMethods())
+			{
+				int modifiers = method.getModifiers();
+				if (Modifier.isPublic(modifiers))
+				{
+					methodCache.put(method);
+				}
+			}
         }
         catch (SecurityException se) // Everybody feels better with...
         {
@@ -194,7 +195,7 @@ public class ClassMap
 
         private static final String NULL_ARG = Object.class.getName();
 
-        private static final Map convertPrimitives = new HashMap();
+		private static final Map<Class<? extends Serializable>, String> convertPrimitives = new HashMap<Class<? extends Serializable>, String>();
 
         static
         {
@@ -215,7 +216,7 @@ public class ClassMap
          * Cache of Methods, or CACHE_MISS, keyed by method
          * name and actual arguments used to find it.
          */
-        private final Map cache = new ConcurrentHashMap();
+        private final Map<String, Object> cache = new ConcurrentHashMap<String, Object>();
 
         /** Map of methods that are searchable according to method parameters to find a match */
         private final MethodMap methodMap = new MethodMap();
@@ -306,7 +307,7 @@ public class ClassMap
          */
         private String makeMethodKey(final Method method)
         {
-            Class[] parameterTypes = method.getParameterTypes();
+            Class<?>[] parameterTypes = method.getParameterTypes();
             int args = parameterTypes.length;
             if (args == 0)
             {
@@ -315,28 +316,28 @@ public class ClassMap
 
             StringBuilder methodKey = new StringBuilder((args+1)*16).append(method.getName());
 
-            for (int j = 0; j < args; j++)
-            {
-                /*
-                 * If the argument type is primitive then we want
-                 * to convert our primitive type signature to the
-                 * corresponding Object type so introspection for
-                 * methods with primitive types will work correctly.
-                 *
-                 * The lookup map (convertPrimitives) contains all eight
-                 * primitives (boolean, byte, char, double, float, int, long, short)
-                 * known to Java. So it should never return null for the key passed in.
-                 */
-                if (parameterTypes[j].isPrimitive())
-                {
-                    methodKey.append((String) convertPrimitives.get(parameterTypes[j]));
-                }
-                else
-                {
-                    methodKey.append(parameterTypes[j].getName());
-                }
-            }
-
+            for (Class<?> parameterType : parameterTypes)
+			{
+				/*
+				 * If the argument type is primitive then we want to convert our
+				 * primitive type signature to the corresponding Object type so
+				 * introspection for methods with primitive types will work
+				 * correctly.
+				 * 
+				 * The lookup map (convertPrimitives) contains all eight
+				 * primitives (boolean, byte, char, double, float, int, long,
+				 * short) known to Java. So it should never return null for the
+				 * key passed in.
+				 */
+				if (parameterType.isPrimitive())
+				{
+					methodKey.append(convertPrimitives.get(parameterType));
+				} else
+				{
+					methodKey.append(parameterType.getName());
+				}
+			}
+            
             return methodKey.toString();
         }
 
@@ -350,18 +351,16 @@ public class ClassMap
 
             StringBuilder methodKey = new StringBuilder((args+1)*16).append(method);
 
-            for (int j = 0; j < args; j++)
-            {
-                Object arg = params[j];
-                if (arg == null)
-                {
-                    methodKey.append(NULL_ARG);
-                }
-                else
-                {
-                    methodKey.append(arg.getClass().getName());
-                }
-            }
+            for (Object arg : params)
+			{
+				if (arg == null)
+				{
+					methodKey.append(NULL_ARG);
+				} else
+				{
+					methodKey.append(arg.getClass().getName());
+				}
+			}
 
             return methodKey.toString();
         }

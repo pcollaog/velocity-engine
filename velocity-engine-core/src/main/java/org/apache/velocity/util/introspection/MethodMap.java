@@ -21,7 +21,6 @@ package org.apache.velocity.util.introspection;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,7 +43,7 @@ public class MethodMap
     /**
      * Keep track of all methods with the same name.
      */
-    Map methodByNameMap = new ConcurrentHashMap();
+    Map<String, List<Method>> methodByNameMap = new ConcurrentHashMap<String, List<Method>>();
 
     /**
      * Add a method to a list of methods by name.
@@ -56,11 +55,11 @@ public class MethodMap
     {
         String methodName = method.getName();
 
-        List l = get( methodName );
+        List<Method> l = get( methodName );
 
         if ( l == null)
         {
-            l = new ArrayList();
+            l = new ArrayList<Method>();
             methodByNameMap.put(methodName, l);
         }
 
@@ -71,12 +70,13 @@ public class MethodMap
      * Return a list of methods with the same name.
      *
      * @param key
+     * @return 
      * @return List list of methods
      */
-    public List get(String key)
-    {
-        return (List) methodByNameMap.get(key);
-    }
+	public List<Method> get(String key)
+	{
+		return methodByNameMap.get(key);
+	}
 
     /**
      *  <p>
@@ -109,7 +109,7 @@ public class MethodMap
     public Method find(String methodName, Object[] args)
         throws AmbiguousException
     {
-        List methodList = get(methodName);
+        List<Method> methodList = get(methodName);
 
         if (methodList == null)
         {
@@ -117,7 +117,7 @@ public class MethodMap
         }
 
         int l = args.length;
-        Class[] classes = new Class[l];
+        Class<?>[] classes = new Class[l];
 
         for(int i = 0; i < l; ++i)
         {
@@ -134,78 +134,79 @@ public class MethodMap
         return getBestMatch(methodList, classes);
     }
 
-    private static Method getBestMatch(List methods, Class[] args)
+    private static Method getBestMatch(List<Method> methods, Class<?>[] args)
     {
-        List equivalentMatches = null;
+        List<Method> equivalentMatches = null;
         Method bestMatch = null;
-        Class[] bestMatchTypes = null;
-        for (Iterator i = methods.iterator(); i.hasNext(); )
-        {
-            Method method = (Method)i.next();
-            if (isApplicable(method, args))
-            {
-                if (bestMatch == null)
-                {
-                    bestMatch = method;
-                    bestMatchTypes = method.getParameterTypes();
-                }
-                else
-                {
-                    Class[] methodTypes = method.getParameterTypes();
-                    switch (compare(methodTypes, bestMatchTypes))
-                    {
-                        case MORE_SPECIFIC:
-                            if (equivalentMatches == null)
-                            {
-                                bestMatch = method;
-                                bestMatchTypes = methodTypes;
-                            }
-                            else
-                            {
-                                // have to beat all other ambiguous ones...
-                                int ambiguities = equivalentMatches.size();
-                                for (int a=0; a < ambiguities; a++)
-                                {
-                                    Method other = (Method)equivalentMatches.get(a);
-                                    switch (compare(methodTypes, other.getParameterTypes()))
-                                    {
-                                        case MORE_SPECIFIC:
-                                            // ...and thus replace them all...
-                                            bestMatch = method;
-                                            bestMatchTypes = methodTypes;
-                                            equivalentMatches = null;
-                                            ambiguities = 0;
-                                            break;
+        Class<?>[] bestMatchTypes = null;
+        
+        for (Method method : methods)
+		{
+			if (isApplicable(method, args))
+			{
+				if (bestMatch == null)
+				{
+					bestMatch = method;
+					bestMatchTypes = method.getParameterTypes();
+				} else
+				{
+					Class<?>[] methodTypes = method.getParameterTypes();
+					switch (compare(methodTypes, bestMatchTypes))
+					{
+						case MORE_SPECIFIC:
+							if (equivalentMatches == null)
+							{
+								bestMatch = method;
+								bestMatchTypes = methodTypes;
+							} else
+							{
+								// have to beat all other ambiguous ones...
+								int ambiguities = equivalentMatches.size();
+								for (int a = 0; a < ambiguities; a++)
+								{
+									Method other = equivalentMatches.get(a);
+									switch (compare(methodTypes,
+											other.getParameterTypes()))
+									{
+										case MORE_SPECIFIC:
+											// ...and thus replace them all...
+											bestMatch = method;
+											bestMatchTypes = methodTypes;
+											equivalentMatches = null;
+											ambiguities = 0;
+											break;
 
-                                        case INCOMPARABLE:
-                                            // ...join them...
-                                            equivalentMatches.add(method);
-                                            break;
+										case INCOMPARABLE:
+											// ...join them...
+											equivalentMatches.add(method);
+											break;
 
-                                        case LESS_SPECIFIC:
-                                            // ...or just go away.
-                                            break;
-                                    }
-                                }
-                            }
-                            break;
+										case LESS_SPECIFIC:
+											// ...or just go away.
+											break;
+									}
+								}
+							}
+							break;
 
-                        case INCOMPARABLE:
-                            if (equivalentMatches == null)
-                            {
-                                equivalentMatches = new ArrayList(bestMatchTypes.length);
-                            }
-                            equivalentMatches.add(method);
-                            break;
+						case INCOMPARABLE:
+							if (equivalentMatches == null)
+							{
+								equivalentMatches = new ArrayList<Method>(
+										bestMatchTypes.length);
+							}
+							equivalentMatches.add(method);
+							break;
 
-                        case LESS_SPECIFIC:
-                            // do nothing
-                            break;
-                    }
-                }
-            }
-        }
-                
+						case LESS_SPECIFIC:
+							// do nothing
+							break;
+					}
+				}
+			}
+
+		}
+        
         if (equivalentMatches != null)
         {
             System.out.println("ambiguous: "+equivalentMatches);
@@ -235,7 +236,7 @@ public class MethodMap
      * @return MORE_SPECIFIC if c1 is more specific than c2, LESS_SPECIFIC if
      * c1 is less specific than c2, INCOMPARABLE if they are incomparable.
      */
-    private static int compare(Class[] c1, Class[] c2)
+    private static int compare(Class<?>[] c1, Class<?>[] c2)
     {
         boolean c1MoreSpecific = false;
         boolean c2MoreSpecific = false;
@@ -319,9 +320,9 @@ public class MethodMap
      * @param classes arguments to method
      * @return true if method is applicable to arguments
      */
-    private static boolean isApplicable(Method method, Class[] classes)
+    private static boolean isApplicable(Method method, Class<?>[] classes)
     {
-        Class[] methodArgs = method.getParameterTypes();
+        Class<?>[] methodArgs = method.getParameterTypes();
 
         if (methodArgs.length > classes.length)
         {
@@ -368,7 +369,7 @@ public class MethodMap
         else if (methodArgs.length > 0) // more arguments given than the method accepts; check for varargs
         {
             // check that the last methodArg is an array
-            Class lastarg = methodArgs[methodArgs.length - 1];
+            Class<?> lastarg = methodArgs[methodArgs.length - 1];
             if (!lastarg.isArray())
             {
                 return false;
@@ -384,7 +385,7 @@ public class MethodMap
             }
 
             // check that all remaining arguments are convertible to the vararg type
-            Class vararg = lastarg.getComponentType();
+            Class<?> vararg = lastarg.getComponentType();
             for (int i = methodArgs.length - 1; i < classes.length; ++i)
             {
                 if (!isConvertible(vararg, classes[i], false))
@@ -397,14 +398,14 @@ public class MethodMap
         return true;
     }
 
-    private static boolean isConvertible(Class formal, Class actual,
+    private static boolean isConvertible(Class<?> formal, Class<?> actual,
                                          boolean possibleVarArg)
     {
         return IntrospectionUtils.
             isMethodInvocationConvertible(formal, actual, possibleVarArg);
     }
 
-    private static boolean isStrictConvertible(Class formal, Class actual,
+    private static boolean isStrictConvertible(Class<?> formal, Class<?> actual,
                                                boolean possibleVarArg)
     {
         return IntrospectionUtils.

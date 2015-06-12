@@ -75,7 +75,7 @@ public class Introspector extends IntrospectorBase
      * @return The desired Method object.
      * @throws IllegalArgumentException When the parameters passed in can not be used for introspection.
      */
-    public Method getMethod(final Class c, final String name, final Object[] params)
+    public Method getMethod(final Class<?> c, final String name, final Object[] params)
         throws IllegalArgumentException
     {
         try

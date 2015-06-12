@@ -83,7 +83,7 @@ public abstract class IntrospectorBase
      * @throws IllegalArgumentException When the parameters passed in can not be used for introspection.
      * @throws MethodMap.AmbiguousException When the method map contains more than one match for the requested signature.
      */
-    public Method getMethod(final Class c, final String name, final Object[] params)
+    public Method getMethod(final Class<?> c, final String name, final Object[] params)
             throws IllegalArgumentException,MethodMap.AmbiguousException
     {
         if (c == null)
@@ -116,7 +116,7 @@ public abstract class IntrospectorBase
      * @return The desired Field object.
      * @throws IllegalArgumentException When the parameters passed in can not be used for introspection.
      */
-    public Field getField(final Class c, final String name)
+    public Field getField(final Class<?> c, final String name)
             throws IllegalArgumentException
     {
         if (c == null)

@@ -28,12 +28,12 @@ import java.util.Enumeration;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id$
  */
-public class EnumerationIterator implements Iterator
+public class EnumerationIterator implements Iterator<Object>
 {
     /**
      * The enumeration to iterate.
      */
-    private Enumeration enumeration = null;
+    private Enumeration<Object> enumeration = null;
 
     /**
      * Creates a new iteratorwrapper instance for the specified
@@ -41,7 +41,7 @@ public class EnumerationIterator implements Iterator
      *
      * @param enumeration  The Enumeration to wrap.
      */
-    public EnumerationIterator(Enumeration enumeration)
+    public EnumerationIterator(Enumeration<Object> enumeration)
     {
         this.enumeration = enumeration;
     }

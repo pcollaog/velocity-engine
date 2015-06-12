@@ -21,7 +21,6 @@ package org.apache.velocity.runtime.resource.loader;
 
 import java.io.InputStream;
 
-import java.util.Hashtable;
 import java.util.Vector;
 import java.util.Map;
 import java.util.HashMap;
@@ -69,14 +68,14 @@ public class JarResourceLoader extends ResourceLoader
      * Key = the entry *excluding* plain directories
      * Value = the JAR URL
      */
-    private Map entryDirectory = new HashMap(559);
+    private Map<String,String> entryDirectory = new HashMap<String,String>(559);
 
     /**
      * Maps JAR URLs to the actual JAR
      * Key = the JAR URL
      * Value = the JAR
      */
-    private Map jarfiles = new HashMap(89);
+    private Map<String, JarHolder> jarfiles = new HashMap<String, JarHolder>(89);
 
     /**
      * Called by Velocity to initialize the loader
@@ -89,7 +88,7 @@ public class JarResourceLoader extends ResourceLoader
         // rest of Velocity engine still use legacy Vector
         // and Hashtable classes. Classes are implicitly
         // synchronized even if we don't need it.
-        Vector paths = configuration.getVector("path");
+        Vector<String> paths = configuration.getVector("path");
         StringUtils.trimStrings(paths);
 
         if (paths != null)
@@ -98,7 +97,7 @@ public class JarResourceLoader extends ResourceLoader
 
             for ( int i=0; i<paths.size(); i++ )
             {
-                loadJar( (String)paths.get(i) );
+                loadJar( paths.get(i) );
             }
         }
 
@@ -150,7 +149,7 @@ public class JarResourceLoader extends ResourceLoader
     {
         if ( jarfiles.containsKey(path) )
         {
-            JarHolder theJar = (JarHolder)jarfiles.get(path);
+            JarHolder theJar = jarfiles.get(path);
             theJar.close();
         }
     }
@@ -159,7 +158,7 @@ public class JarResourceLoader extends ResourceLoader
      * Copy all the entries into the entryDirectory
      * It will overwrite any duplicate keys.
      */
-    private void addEntries( Hashtable entries )
+    private void addEntries( Map<String,String> entries )
     {
         entryDirectory.putAll( entries );
     }
@@ -206,11 +205,11 @@ public class JarResourceLoader extends ResourceLoader
 
         if ( entryDirectory.containsKey( normalizedPath ) )
         {
-            String jarurl  = (String)entryDirectory.get( normalizedPath );
+            String jarurl  = entryDirectory.get( normalizedPath );
 
             if ( jarfiles.containsKey( jarurl ) )
             {
-                JarHolder holder = (JarHolder)jarfiles.get( jarurl );
+                JarHolder holder = jarfiles.get( jarurl );
                 results =  holder.getResource( normalizedPath );
                 return results;
             }

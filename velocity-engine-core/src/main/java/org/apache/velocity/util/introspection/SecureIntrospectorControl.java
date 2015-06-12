@@ -37,6 +37,6 @@ public interface SecureIntrospectorControl
      *
      * @return true if method may be called on object
      */
-    public boolean checkObjectExecutePermission(Class clazz, String method);
+    public boolean checkObjectExecutePermission(Class<?> clazz, String method);
 
 }

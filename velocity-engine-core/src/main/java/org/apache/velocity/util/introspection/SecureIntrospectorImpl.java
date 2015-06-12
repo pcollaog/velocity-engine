@@ -58,7 +58,7 @@ public class SecureIntrospectorImpl extends Introspector implements SecureIntros
      * @return Method object retrieved by Introspector
      * @throws IllegalArgumentException The parameter passed in were incorrect.
      */
-    public Method getMethod(Class clazz, String methodName, Object[] params)
+    public Method getMethod(Class<?> clazz, String methodName, Object[] params)
         throws IllegalArgumentException
     {
         if (!checkObjectExecutePermission(clazz, methodName))
@@ -85,7 +85,7 @@ public class SecureIntrospectorImpl extends Introspector implements SecureIntros
      * @param methodName Name of method to be called
      * @see org.apache.velocity.util.introspection.SecureIntrospectorControl#checkObjectExecutePermission(java.lang.Class, java.lang.String)
      */
-    public boolean checkObjectExecutePermission(Class clazz, String methodName)
+    public boolean checkObjectExecutePermission(Class<?> clazz, String methodName)
     {
 		/**
 		 * check for wait and notify
