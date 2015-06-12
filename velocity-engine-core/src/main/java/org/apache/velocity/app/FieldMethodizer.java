@@ -22,6 +22,8 @@ package org.apache.velocity.app;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.velocity.util.ClassUtils;
 
 /**
@@ -62,7 +64,7 @@ import org.apache.velocity.util.ClassUtils;
 public class FieldMethodizer
 {
     /** Hold the field objects by field name */
-    private HashMap fieldHash = new HashMap();
+    private Map<String, Field> fieldHash = new HashMap<String, Field>();
 
     /**
      * Allow object to be initialized without any data. You would use
@@ -148,7 +150,7 @@ public class FieldMethodizer
         Object value = null;
         try
         {
-            Field f = (Field) fieldHash.get( fieldName );
+            Field f = fieldHash.get( fieldName );
             if (f != null)
             {
                 value = f.get(null);
@@ -166,19 +168,19 @@ public class FieldMethodizer
      *  Method that retrieves all public static fields
      *  in the class we are methodizing.
      */
-    private void inspect(Class clas)
-    {
-        Field[] fields = clas.getFields();
-        for( int i = 0; i < fields.length; i++)
-        {
-            /*
-             *  only if public and static
-             */
-            int mod = fields[i].getModifiers();
-            if ( Modifier.isStatic(mod) && Modifier.isPublic(mod) )
-            {
-                fieldHash.put(fields[i].getName(), fields[i]);
-            }
-        }
-    }
+	private void inspect(Class<?> clas)
+	{
+		Field[] fields = clas.getFields();
+		for (Field field : fields)
+		{
+			/*
+			 * only if public and static
+			 */
+			int mod = field.getModifiers();
+			if (Modifier.isStatic(mod) && Modifier.isPublic(mod))
+			{
+				fieldHash.put(field.getName(), field);
+			}
+		}
+	}
 }

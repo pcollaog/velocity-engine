@@ -19,6 +19,7 @@ package org.apache.velocity;
  * under the License.    
  */
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +49,7 @@ import org.apache.velocity.context.Context;
  *  @author <a href="mailto:dlr@finemaltcoding.com">Daniel Rall</a>
  *  @version $Id$
  */
-public class VelocityContext extends AbstractContext implements Cloneable
+public class VelocityContext extends AbstractContext implements Cloneable, Serializable
 {
     /**
      * Version Id for serializable
@@ -58,7 +59,7 @@ public class VelocityContext extends AbstractContext implements Cloneable
     /**
      *  Storage for key/value pairs.
      */
-    private Map context = null;
+    private Map<String,Object> context = null;
 
     /**
      *  Creates a new instance (with no inner context).
@@ -73,7 +74,7 @@ public class VelocityContext extends AbstractContext implements Cloneable
      *  context).
      * @param context
      */
-    public VelocityContext(Map context)
+    public VelocityContext(Map<String,Object> context)
     {
         this(context, null);
     }
@@ -101,10 +102,10 @@ public class VelocityContext extends AbstractContext implements Cloneable
      *  create default storage.
      *  @param innerContext Inner context.
      */
-    public VelocityContext(Map context, Context innerContext)
+    public VelocityContext(Map<String,Object> context, Context innerContext)
     {
         super(innerContext);
-        this.context = (context == null ? new HashMap() : context);
+        this.context = (context == null ? new HashMap<String,Object>() : context);
     }
 
     /**
@@ -177,7 +178,7 @@ public class VelocityContext extends AbstractContext implements Cloneable
         try
         {
             clone = (VelocityContext) super.clone();
-            clone.context = new HashMap(context);
+            clone.context = new HashMap<String,Object>(context);
         }
         catch (CloneNotSupportedException ignored)
         {
