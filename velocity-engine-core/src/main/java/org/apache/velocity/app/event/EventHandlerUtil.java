@@ -64,13 +64,13 @@ public class EventHandlerUtil {
          * Iterator object.
          */
         EventCartridge ev1 = rsvc.getApplicationEventCartridge();
-        Iterator applicationEventHandlerIterator = 
-            (ev1 == null) ? null: ev1.getReferenceInsertionEventHandlers();              
+		Iterator<ReferenceInsertionEventHandler> applicationEventHandlerIterator = (ev1 == null) ? null
+				: ev1.getReferenceInsertionEventHandlers();
         
         EventCartridge ev2 = context.getEventCartridge();
         initializeEventCartridge(rsvc, ev2);
-        Iterator contextEventHandlerIterator = 
-            (ev2 == null) ? null: ev2.getReferenceInsertionEventHandlers();              
+		Iterator<ReferenceInsertionEventHandler> contextEventHandlerIterator = (ev2 == null) ? null
+				: ev2.getReferenceInsertionEventHandlers();
         
         try 
         {
@@ -128,18 +128,18 @@ public class EventHandlerUtil {
      *             to be wrapped and propagated to app
      */
     public static Object methodException(RuntimeServices rsvc,
-            InternalContextAdapter context, Class claz, String method,
+            InternalContextAdapter context, Class<?> claz, String method,
             Exception e) throws Exception 
     {
         // app level cartridges have already been initialized
         EventCartridge ev1 = rsvc.getApplicationEventCartridge();
-        Iterator applicationEventHandlerIterator = 
-            (ev1 == null) ? null: ev1.getMethodExceptionEventHandlers();              
+		Iterator<MethodExceptionEventHandler> applicationEventHandlerIterator = (ev1 == null) ? null
+				: ev1.getMethodExceptionEventHandlers();
         
         EventCartridge ev2 = context.getEventCartridge();
         initializeEventCartridge(rsvc, ev2);
-        Iterator contextEventHandlerIterator = 
-            (ev2 == null) ? null: ev2.getMethodExceptionEventHandlers();              
+		Iterator<MethodExceptionEventHandler> contextEventHandlerIterator = (ev2 == null) ? null
+				: ev2.getMethodExceptionEventHandlers();
         
         EventHandlerMethodExecutor methodExecutor = 
             new MethodExceptionEventHandler.MethodExceptionExecutor(context, claz, method, e);
@@ -183,13 +183,13 @@ public class EventHandlerUtil {
     {
         // app level cartridges have already been initialized
         EventCartridge ev1 = rsvc.getApplicationEventCartridge();
-        Iterator applicationEventHandlerIterator = 
-            (ev1 == null) ? null: ev1.getIncludeEventHandlers();              
+		Iterator<IncludeEventHandler> applicationEventHandlerIterator = (ev1 == null) ? null
+				: ev1.getIncludeEventHandlers();
         
         EventCartridge ev2 = context.getEventCartridge();
         initializeEventCartridge(rsvc, ev2);
-        Iterator contextEventHandlerIterator = 
-            (ev2 == null) ? null: ev2.getIncludeEventHandlers();              
+		Iterator<IncludeEventHandler> contextEventHandlerIterator = (ev2 == null) ? null
+				: ev2.getIncludeEventHandlers();
         
         try 
         {
@@ -301,13 +301,13 @@ public class EventHandlerUtil {
     {
         // app level cartridges have already been initialized
         EventCartridge ev1 = rsvc.getApplicationEventCartridge();
-        Iterator applicationEventHandlerIterator = 
-            (ev1 == null) ? null: ev1.getInvalidReferenceEventHandlers();              
+		Iterator<InvalidReferenceEventHandler> applicationEventHandlerIterator = (ev1 == null) ? null
+				: ev1.getInvalidReferenceEventHandlers();
         
         EventCartridge ev2 = context.getEventCartridge();
         initializeEventCartridge(rsvc, ev2);
-        Iterator contextEventHandlerIterator = 
-            (ev2 == null) ? null: ev2.getInvalidReferenceEventHandlers();              
+		Iterator<InvalidReferenceEventHandler> contextEventHandlerIterator = (ev2 == null) ? null
+				: ev2.getInvalidReferenceEventHandlers();
         
         try
         {
@@ -358,8 +358,8 @@ public class EventHandlerUtil {
      * @param eventExecutor Strategy object that executes event handler method
      */
     private static void callEventHandlers(
-            Iterator applicationEventHandlerIterator, 
-            Iterator contextEventHandlerIterator,
+            Iterator<? extends EventHandler> applicationEventHandlerIterator, 
+            Iterator<? extends EventHandler> contextEventHandlerIterator,
             EventHandlerMethodExecutor eventExecutor)
     {
         /**
@@ -381,14 +381,14 @@ public class EventHandlerUtil {
      * @param eventExecutor Strategy object that executes event handler method
      */
     private static void iterateOverEventHandlers(
-            Iterator handlerIterator,
+            Iterator<? extends EventHandler> handlerIterator,
             EventHandlerMethodExecutor eventExecutor)
     {
         if (handlerIterator != null)
         {
-            for (Iterator i = handlerIterator; i.hasNext();)
+            for (Iterator<? extends EventHandler> i = handlerIterator; i.hasNext();)
             {
-                EventHandler eventHandler = (EventHandler) i.next();
+                EventHandler eventHandler = i.next();
                 
                 if (!eventExecutor.isDone())
                 {

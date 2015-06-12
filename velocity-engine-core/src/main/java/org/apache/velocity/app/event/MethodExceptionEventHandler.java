@@ -46,7 +46,7 @@ public interface MethodExceptionEventHandler extends EventHandler
      * @return an object to insert in the page
      * @throws RuntimeException an exception to be thrown instead inserting an object
      */
-    public Object methodException( Class claz, String method, Exception e );
+    public Object methodException( Class<?> claz, String method, Exception e );
 
     /**
      * Defines the execution strategy for methodException
@@ -55,7 +55,7 @@ public interface MethodExceptionEventHandler extends EventHandler
     static class MethodExceptionExecutor implements EventHandlerMethodExecutor
     {
         private Context context;
-        private Class claz;
+        private Class<?> claz;
         private String method;
         private Exception e;
         
@@ -64,7 +64,7 @@ public interface MethodExceptionEventHandler extends EventHandler
     
         MethodExceptionExecutor(
                 Context context, 
-                Class claz,
+                Class<?> claz,
                 String method,
                 Exception e)
         {

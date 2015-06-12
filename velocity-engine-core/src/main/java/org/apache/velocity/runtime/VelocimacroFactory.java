@@ -90,13 +90,13 @@ public class VelocimacroFactory
     /**
      *  vector of the library names
      */
-    private List macroLibVec = null;
+    private List<String> macroLibVec = null;
 
     /**
      *  map of the library Template objects
      *  used for reload determination
      */
-    private Map libModMap;
+    private Map<String, Twonk> libModMap;
 
     /**
      *  C'tor for the VelociMacro factory.
@@ -113,7 +113,7 @@ public class VelocimacroFactory
          *  we always access in a synchronized(), so we
          *  can use an unsynchronized hashmap
          */
-        libModMap = new HashMap();
+        libModMap = new HashMap<String, Twonk>();
         vmManager = new VelocimacroManager(rsvc);
     }
 
@@ -168,19 +168,19 @@ public class VelocimacroFactory
 
              if(libfiles != null)
              {
-                 macroLibVec = new ArrayList();
+                 macroLibVec = new ArrayList<String>();
                  if (libfiles instanceof Vector)
                  {
                      macroLibVec.addAll((Vector)libfiles);
                  }
                  else if (libfiles instanceof String)
                  {
-                     macroLibVec.add(libfiles);
+                     macroLibVec.add(libfiles.toString());
                  }
 
                  for(int i = 0, is = macroLibVec.size(); i < is; i++)
                  {
-                     String lib = (String) macroLibVec.get(i);
+                     String lib = macroLibVec.get(i);
 
                      /*
                       * only if it's a non-empty string do we bother
@@ -600,7 +600,7 @@ public class VelocimacroFactory
                          * get the template from our map
                          */
 
-                        Twonk tw = (Twonk) libModMap.get(lib);
+                        Twonk tw = libModMap.get(lib);
 
                         if (tw != null)
                         {

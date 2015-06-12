@@ -266,21 +266,20 @@ public class RuntimeMacro extends Directive
          */
         if (vmProxy == null)
         {
-            List macroLibraries = context.getMacroLibraries();
+            List<String> macroLibraries = context.getMacroLibraries();
             if (macroLibraries != null)
             {
-                for (int i = macroLibraries.size() - 1; i >= 0; i--)
-                {
-                    o = rsvc.getVelocimacro(macroName,
-                            (String)macroLibraries.get(i), renderingTemplate);
+            	for (String macro : macroLibraries)
+				{
+					o = rsvc.getVelocimacro(macroName, macro, renderingTemplate);
 
-                    // get the first matching macro
-                    if (o != null)
-                    {
-                        vmProxy = (VelocimacroProxy) o;
-                        break;
-                    }
-                }
+					// get the first matching macro
+					if (o != null)
+					{
+						vmProxy = (VelocimacroProxy) o;
+						break;
+					}
+				}
             }
         }
 

@@ -31,6 +31,7 @@ import org.apache.velocity.runtime.directive.Macro;
 import org.apache.velocity.runtime.directive.VelocimacroProxy;
 import org.apache.velocity.runtime.parser.node.Node;
 import org.apache.velocity.runtime.parser.node.SimpleNode;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -56,13 +57,13 @@ public class VelocimacroManager
     private boolean registerFromLib = false;
 
     /** Hash of namespace hashes. */
-    private final Map namespaceHash = new ConcurrentHashMap(17, 0.5f, 20);
+    private final Map<String, Map<String, MacroEntry>> namespaceHash = new ConcurrentHashMap<String, Map<String, MacroEntry>>(17, 0.5f, 20);
 
     /** reference to global namespace hash */
-    private final Map globalNamespace;
+    private final Map<String, MacroEntry> globalNamespace;
 
     /** set of names of library tempates/namespaces */
-    private final Set libraries = Collections.synchronizedSet(new HashSet());
+    private final Set<String> libraries = Collections.synchronizedSet(new HashSet<String>());
     
     private RuntimeServices rsvc = null;
 
@@ -93,7 +94,7 @@ public class VelocimacroManager
      */
     public List<VelocimacroProxy> getVelocimacros(String templateName)
     {
-      Map local = getNamespace(templateName, false);
+      Map<String, MacroEntry> local = getNamespace(templateName, false);
       ArrayList<VelocimacroProxy> macros = new ArrayList<VelocimacroProxy>(16);
       if (local != null)
       {
@@ -142,7 +143,7 @@ public class VelocimacroManager
 
         boolean isLib = true;
 
-        MacroEntry exist = (MacroEntry) globalNamespace.get(vmName);
+        MacroEntry exist = globalNamespace.get(vmName);
         
         if (registerFromLib)
         {
@@ -168,7 +169,7 @@ public class VelocimacroManager
              *  if not, add it to the namespaces, and add the VM
              */
 
-            Map local = getNamespace(namespace, true);
+			Map<String, MacroEntry> local = getNamespace(namespace, true);
             local.put(vmName, me);
             
             return true;
@@ -227,10 +228,10 @@ public class VelocimacroManager
              * moment, check if local namespace contains a macro we are looking for
              * if so, return it instead of the global one
              */
-            Map local = getNamespace(renderingTemplate, false);
+            Map<String, MacroEntry> local = getNamespace(renderingTemplate, false);
             if (local != null)
             {
-                MacroEntry me = (MacroEntry) local.get(vmName);
+                MacroEntry me = local.get(vmName);
 
                 if (me != null)
                 {
@@ -241,7 +242,7 @@ public class VelocimacroManager
         
         if (usingNamespaces(namespace))
         {
-            Map local = getNamespace(namespace, false);
+            Map<String, MacroEntry> local = getNamespace(namespace, false);
 
             /*
              *  if we have macros defined for this template
@@ -249,7 +250,7 @@ public class VelocimacroManager
 
             if (local != null)
             {
-                MacroEntry me = (MacroEntry) local.get(vmName);
+                MacroEntry me = local.get(vmName);
                 
                 if (me != null)
                 {
@@ -263,7 +264,7 @@ public class VelocimacroManager
          * if it's in the global namespace
          */
 
-        MacroEntry me = (MacroEntry) globalNamespace.get(vmName);
+        MacroEntry me = globalNamespace.get(vmName);
 
         if (me != null)
         {
@@ -287,7 +288,7 @@ public class VelocimacroManager
         {
             if (usingNamespaces(namespace))
             {
-                Map h = (Map) namespaceHash.remove(namespace);
+				Map<String, MacroEntry> h = namespaceHash.remove(namespace);
 
                 if (h == null)
                 {
@@ -340,11 +341,12 @@ public class VelocimacroManager
      *
      *  @param namespace  name of the namespace :)
      *  @param addIfNew  flag to add a new namespace if it doesn't exist
+     * @return 
      *  @return namespace Map of VMs or null if doesn't exist
      */
-    private Map getNamespace(final String namespace, final boolean addIfNew)
+    private Map<String, MacroEntry> getNamespace(final String namespace, final boolean addIfNew)
     {
-        Map h = (Map) namespaceHash.get(namespace);
+        Map<String, MacroEntry> h = namespaceHash.get(namespace);
 
         if (h == null && addIfNew)
         {
@@ -360,10 +362,10 @@ public class VelocimacroManager
      *  @param namespace name of namespace to add
      *  @return Hash added to namespaces, ready for use
      */
-    private Map addNamespace(final String namespace)
+    private Map<String, MacroEntry> addNamespace(final String namespace)
     {
-        Map h = new ConcurrentHashMap(17, 0.5f, 20);
-        Object oh;
+    	Map<String, MacroEntry> h = new ConcurrentHashMap<String, MacroEntry>(17, 0.5f, 20);
+    	Map<String, MacroEntry> oh;
 
         if ((oh = namespaceHash.put(namespace, h)) != null)
         {
@@ -424,7 +426,7 @@ public class VelocimacroManager
     {
         if (usingNamespaces(namespace))
         {
-            Map local = getNamespace(namespace, false);
+            Map<String, MacroEntry> local = getNamespace(namespace, false);
 
             /*
              *  if we have this macro defined in this namespace, then
@@ -434,7 +436,7 @@ public class VelocimacroManager
 
             if ( local != null)
             {
-                MacroEntry me = (MacroEntry) local.get(vmName);
+                MacroEntry me = local.get(vmName);
 
                 if (me != null)
                 {
@@ -448,7 +450,7 @@ public class VelocimacroManager
          * if it's in the global namespace
          */
 
-        MacroEntry me = (MacroEntry) globalNamespace.get(vmName);
+        MacroEntry me = globalNamespace.get(vmName);
 
         if (me != null)
         {

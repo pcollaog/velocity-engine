@@ -158,14 +158,14 @@ public class RuntimeInstance implements RuntimeConstants, RuntimeServices
      * taken from the RUNTIME_DEFAULT_DIRECTIVES
      * property file.
      */
-    private Map runtimeDirectives = new Hashtable();
+    private Map<String, Directive> runtimeDirectives = new Hashtable<String, Directive>();
     /**
      * Copy of the actual runtimeDirectives that is shared between
      * parsers. Whenever directives are updated, the synchronized
      * runtimeDirectives is first updated and then an unsynchronized
      * copy of it is passed to parsers.
      */
-    private Map runtimeDirectivesShared;
+    private Map<String, Directive> runtimeDirectivesShared;
 
     /**
      * Object that houses the configuration options for
@@ -181,7 +181,7 @@ public class RuntimeInstance implements RuntimeConstants, RuntimeServices
      * And a configuration is a lot more convenient to deal
      * with then conventional properties objects, or Maps.
      */
-    private  ExtendedProperties configuration = new ExtendedProperties();
+    private ExtendedProperties configuration = new ExtendedProperties();
 
     private ResourceManager resourceManager = null;
 
@@ -208,7 +208,7 @@ public class RuntimeInstance implements RuntimeConstants, RuntimeServices
      *  application for use in application supplied/specified
      *  pluggable components
      */
-    private Map applicationAttributes = null;
+	private Map<Object, Object> applicationAttributes = null;
     private Uberspect uberSpect;
     private String encoding;
 
@@ -286,7 +286,7 @@ public class RuntimeInstance implements RuntimeConstants, RuntimeServices
         this.parserPool = null;
         this.provideEvaluateScope = false;
         this.resourceManager = null;
-        this.runtimeDirectives = new Hashtable();
+        this.runtimeDirectives = new Hashtable<String, Directive>();
         this.runtimeDirectivesShared = null;
         this.uberSpect = null;
 
@@ -303,7 +303,7 @@ public class RuntimeInstance implements RuntimeConstants, RuntimeServices
         /*
          * and a store for the application attributes
          */
-        applicationAttributes = new HashMap();
+        applicationAttributes = new HashMap<Object, Object>();
     }
 
     /**
@@ -828,7 +828,7 @@ public class RuntimeInstance implements RuntimeConstants, RuntimeServices
 
     }
 
-    private EventHandler initializeSpecificEventHandler(String classname, String paramName, Class EventHandlerInterface)
+    private EventHandler initializeSpecificEventHandler(String classname, String paramName, Class<?> EventHandlerInterface)
     {
         if ( classname != null && classname.length() > 0)
         {
@@ -956,7 +956,7 @@ public class RuntimeInstance implements RuntimeConstants, RuntimeServices
          *
          * org.apache.velocity.runtime.directive.Foreach
          */
-        Enumeration directiveClasses = directiveProperties.elements();
+         Enumeration<Object> directiveClasses = directiveProperties.elements();
 
         while (directiveClasses.hasMoreElements())
         {
@@ -999,7 +999,7 @@ public class RuntimeInstance implements RuntimeConstants, RuntimeServices
      */
     public Directive getDirective(String name)
     {
-        return (Directive) runtimeDirectivesShared.get(name);
+        return runtimeDirectivesShared.get(name);
     }
 
     /**
@@ -1022,7 +1022,7 @@ public class RuntimeInstance implements RuntimeConstants, RuntimeServices
      */
     private void updateSharedDirectivesMap()
     {
-        Map tmp = new HashMap(runtimeDirectives);
+        Map<String, Directive> tmp = new HashMap<String, Directive>(runtimeDirectives);
         runtimeDirectivesShared = tmp;
     }
 
@@ -1210,7 +1210,7 @@ public class RuntimeInstance implements RuntimeConstants, RuntimeServices
     {
         requireInitialization();
 
-        Parser parser = (Parser) parserPool.get();
+        Parser parser = parserPool.get();
         boolean keepParser = true;
         if (parser == null)
         {
