@@ -20,7 +20,6 @@ package org.apache.velocity.runtime.log;
  */
 
 import java.util.Vector;
-import java.util.Iterator;
 import org.apache.velocity.runtime.RuntimeServices;
 
 /**
@@ -36,7 +35,7 @@ import org.apache.velocity.runtime.RuntimeServices;
  */
 class HoldingLogChute implements LogChute
 {
-    private Vector pendingMessages = new Vector();
+    private Vector<Object[]> pendingMessages = new Vector<Object[]>();
     private volatile boolean transferring = false;
 
     /**
@@ -95,28 +94,27 @@ class HoldingLogChute implements LogChute
      * @param newChute
      */
     public synchronized void transferTo(LogChute newChute)
-    {
-        if (!transferring && !pendingMessages.isEmpty())
-        {
-            // let the other methods know what's up
-            transferring = true;
+	{
+		if (!transferring && !pendingMessages.isEmpty())
+		{
+			// let the other methods know what's up
+			transferring = true;
 
-            // iterate and log each individual message...
-            for(Iterator i = pendingMessages.iterator(); i.hasNext();)
-            {
-                Object[] data = (Object[])i.next();
-                int level = ((Integer)data[0]).intValue();
-                String message = (String)data[1];
-                if (data.length == 2)
-                {
-                    newChute.log(level, message);
-                }
-                else
-                {
-                    newChute.log(level, message, (Throwable)data[2]);
-                }
-            }
-        }
-    }
+			// iterate and log each individual message...
+			for (Object[] data : pendingMessages)
+			{
+				int level = ((Integer) data[0]).intValue();
+				String message = (String) data[1];
+				if (2 == data.length)
+				{
+					newChute.log(level, message);
+				} else
+				{
+					newChute.log(level, message, (Throwable) data[2]);
+				}
+
+			}
+		}
+	}
 
 }
