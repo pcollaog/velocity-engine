@@ -67,7 +67,7 @@ public abstract class MathUtils
     /**
      * The <code>Class</code>-object is key, the maximum-value is the value
      */
-    protected static final Map ints = new HashMap();
+	protected static final Map<Class<? extends Number>, BigDecimal> ints = new HashMap<Class<? extends Number>, BigDecimal>();
     static
     {
         ints.put (Byte.class, BigDecimal.valueOf (Byte.MAX_VALUE));
@@ -80,7 +80,7 @@ public abstract class MathUtils
     /**
      * The "size" of the number-types - ascending.
      */
-    protected static final List typesBySize = new ArrayList();
+    protected static final List<Class<? extends Number>> typesBySize = new ArrayList<Class<? extends Number>> ();
     static
     {
         typesBySize.add (Byte.class);
@@ -174,51 +174,44 @@ public abstract class MathUtils
      * @param type
      * @return Number object representing the primitive.
      */
-    public static Number wrapPrimitive (long value, Class type)
-    {
-        if (type == Byte.class)
-        {
-            if (value > Byte.MAX_VALUE || value < Byte.MIN_VALUE)
-            {
-                type = Short.class;
-            }
-            else
-            {
-                // TODO: JDK 1.4+ -> valueOf()
-                return new Byte ((byte)value);
-            }
-        }
-        if (type == Short.class)
-        {
-            if (value > Short.MAX_VALUE || value < Short.MIN_VALUE)
-            {
-                type = Integer.class;
-            }
-            else
-            {
-                // TODO: JDK 1.4+ -> valueOf()
-                return new Short((short)value);
-            }
-        }
-        if (type == Integer.class)
-        {
-            if (value > Integer.MAX_VALUE || value < Integer.MIN_VALUE)
-            {
-                type = Long.class;
-            }
-            else
-            {
-                // TODO: JDK 1.4+ -> valueOf()
-                return new Integer ((int)value);
-            }
-        }
-        if (type == Long.class)
-        {
-            // TODO: JDK 1.4+ -> valueOf()
-            return new Long (value);
-        }
-        return BigInteger.valueOf( value);
-    }
+    public static Number wrapPrimitive (long value, Class<? extends Number> type)
+	{
+		if (type == Byte.class)
+		{
+			if (value > Byte.MAX_VALUE || value < Byte.MIN_VALUE)
+			{
+				type = Short.class;
+			} else
+			{
+				return Byte.valueOf((byte) value);
+			}
+		}
+		if (type == Short.class)
+		{
+			if (value > Short.MAX_VALUE || value < Short.MIN_VALUE)
+			{
+				type = Integer.class;
+			} else
+			{
+				return Short.valueOf((short) value);
+			}
+		}
+		if (type == Integer.class)
+		{
+			if (value > Integer.MAX_VALUE || value < Integer.MIN_VALUE)
+			{
+				type = Long.class;
+			} else
+			{
+				return Integer.valueOf((int) value);
+			}
+		}
+		if (type == Long.class)
+		{
+			return Long.valueOf(value);
+		}
+		return BigInteger.valueOf(value);
+	}
 
     /**
      * Wrap the result in the object of the bigger type.
