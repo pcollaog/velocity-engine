@@ -53,15 +53,15 @@ import org.apache.velocity.util.RuntimeServicesAware;
  */
 public class EventCartridge
   {
-    private List referenceHandlers = new ArrayList();
-    private List methodExceptionHandlers = new ArrayList();
-    private List includeHandlers = new ArrayList();
-    private List invalidReferenceHandlers = new ArrayList();
+    private List<ReferenceInsertionEventHandler> referenceHandlers = new ArrayList<ReferenceInsertionEventHandler>();
+    private List<MethodExceptionEventHandler> methodExceptionHandlers = new ArrayList<MethodExceptionEventHandler>();
+    private List<IncludeEventHandler> includeHandlers = new ArrayList<IncludeEventHandler>();
+    private List<InvalidReferenceEventHandler> invalidReferenceHandlers = new ArrayList<InvalidReferenceEventHandler>();
 
     /**
      * Ensure that handlers are not initialized more than once.
      */
-    Set initializedHandlers = new HashSet();
+    Set<EventHandler> initializedHandlers = new HashSet<EventHandler>();
 
     /**
      *  Adds an event handler(s) to the Cartridge.  This method
@@ -191,7 +191,7 @@ public class EventCartridge
      * @return iterator of handler objects, null if there are not handlers
      * @since 1.5
      */
-    public Iterator getReferenceInsertionEventHandlers()
+    public Iterator<ReferenceInsertionEventHandler> getReferenceInsertionEventHandlers()
     {
         return referenceHandlers.size() == 0 ? null : referenceHandlers.iterator();
     }
@@ -202,7 +202,7 @@ public class EventCartridge
      * @return iterator of handler objects
      * @since 1.5
      */
-    public Iterator getMethodExceptionEventHandlers()
+    public Iterator<MethodExceptionEventHandler> getMethodExceptionEventHandlers()
     {
         return methodExceptionHandlers.iterator();
     }
@@ -212,7 +212,7 @@ public class EventCartridge
      * 
      * @return iterator of handler objects
      */
-    public Iterator getIncludeEventHandlers()
+    public Iterator<IncludeEventHandler> getIncludeEventHandlers()
     {
         return includeHandlers.iterator();
     }
@@ -223,7 +223,7 @@ public class EventCartridge
      * @return iterator of handler objects
      * @since 1.5
      */
-    public Iterator getInvalidReferenceEventHandlers()
+    public Iterator<InvalidReferenceEventHandler> getInvalidReferenceEventHandlers()
     {
         return invalidReferenceHandlers.iterator();
     }
@@ -269,52 +269,44 @@ public class EventCartridge
      */
     public void initialize (RuntimeServices rs)
     {
-
-        for ( Iterator i = referenceHandlers.iterator(); i.hasNext(); )
-        {
-            EventHandler eh = ( EventHandler ) i.next();
-            if ( (eh instanceof RuntimeServicesAware) &&
-                    !initializedHandlers.contains(eh) )
+		for (ReferenceInsertionEventHandler eventHandler : referenceHandlers)
+		{
+			if ((eventHandler instanceof RuntimeServicesAware)
+					&& !initializedHandlers.contains(eventHandler))
+			{
+				((RuntimeServicesAware) eventHandler).setRuntimeServices(rs);
+				initializedHandlers.add(eventHandler);
+			}
+		}
+    	
+		for (MethodExceptionEventHandler eventHandler : methodExceptionHandlers)
+		{
+            if ( (eventHandler instanceof RuntimeServicesAware) &&
+                    !initializedHandlers.contains(eventHandler) )
             {
-                ((RuntimeServicesAware) eh).setRuntimeServices ( rs );
-                initializedHandlers.add( eh );
+                ((RuntimeServicesAware) eventHandler).setRuntimeServices ( rs );
+                initializedHandlers.add( eventHandler );
             }
-        }
-
-        for ( Iterator i = methodExceptionHandlers.iterator(); i.hasNext(); )
-        {
-            EventHandler eh = ( EventHandler ) i.next();
-            if ( (eh instanceof RuntimeServicesAware) &&
-                    !initializedHandlers.contains(eh) )
+		}
+		
+		for (IncludeEventHandler eventHandler : includeHandlers)
+		{
+            if ( (eventHandler instanceof RuntimeServicesAware) &&
+                    !initializedHandlers.contains(eventHandler) )
             {
-                ((RuntimeServicesAware) eh).setRuntimeServices ( rs );
-                initializedHandlers.add( eh );
+                ((RuntimeServicesAware) eventHandler).setRuntimeServices ( rs );
+                initializedHandlers.add( eventHandler );
             }
-        }
+		}
 
-        for ( Iterator i = includeHandlers.iterator(); i.hasNext(); )
-        {
-            EventHandler eh = ( EventHandler ) i.next();
-            if ( (eh instanceof RuntimeServicesAware) &&
-                    !initializedHandlers.contains(eh) )
+		for (InvalidReferenceEventHandler eventHandler : invalidReferenceHandlers)
+		{
+            if ( (eventHandler instanceof RuntimeServicesAware) &&
+                    !initializedHandlers.contains(eventHandler) )
             {
-                ((RuntimeServicesAware) eh).setRuntimeServices ( rs );
-                initializedHandlers.add( eh );
+                ((RuntimeServicesAware) eventHandler).setRuntimeServices ( rs );
+                initializedHandlers.add( eventHandler );
             }
-        }
-
-        for ( Iterator i = invalidReferenceHandlers.iterator(); i.hasNext(); )
-        {
-            EventHandler eh = ( EventHandler ) i.next();
-            if ( (eh instanceof RuntimeServicesAware) &&
-                    !initializedHandlers.contains(eh) )
-            {
-                ((RuntimeServicesAware) eh).setRuntimeServices ( rs );
-                initializedHandlers.add( eh );
-            }
-        }
-
+		}
     }
-
-
 }
