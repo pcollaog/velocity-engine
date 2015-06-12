@@ -36,43 +36,44 @@ public class MapSetExecutor
 {
     private final String property;
 
-    public MapSetExecutor(final Log log, final Class clazz, final String property)
+    public MapSetExecutor(final Log log, final Class<?> clazz, final String property)
     {
         this.log = log;
         this.property = property;
         discover(clazz);
     }
 
-    protected void discover (final Class clazz)
+    protected void discover (final Class<?> clazz)
     {
-        Class [] interfaces = clazz.getInterfaces();
-        for (int i = 0 ; i < interfaces.length; i++)
-        {
-            if (interfaces[i].equals(Map.class))
-            {
-                try
-                {
-                    if (property != null)
-                    {
-                        setMethod(Map.class.getMethod("put", new Class [] { Object.class, Object.class }));
-                    }
-                }
-                /**
-                 * pass through application level runtime exceptions
-                 */
-                catch( RuntimeException e )
-                {
-                    throw e;
-                }
-                catch(Exception e)
-                {
-                    String msg = "Exception while looking for put('" + property + "') method";
-                    log.error(msg, e);
-                    throw new VelocityException(msg, e);
-                }
-                break;
-            }
-        }
+        Class<?> [] interfaces = clazz.getInterfaces();
+        for (Class<?> intefaceClass : interfaces)
+		{
+			if (intefaceClass.equals(Map.class))
+			{
+				try
+				{
+					if (property != null)
+					{
+						setMethod(Map.class.getMethod("put", new Class[] {
+								Object.class, Object.class }));
+					}
+				}
+				/**
+				 * pass through application level runtime exceptions
+				 */
+				catch (RuntimeException e)
+				{
+					throw e;
+				} catch (Exception e)
+				{
+					String msg = "Exception while looking for put('" + property
+							+ "') method";
+					log.error(msg, e);
+					throw new VelocityException(msg, e);
+				}
+				break;
+			}
+		}
     }
 
     public Object execute(final Object o, final Object arg)

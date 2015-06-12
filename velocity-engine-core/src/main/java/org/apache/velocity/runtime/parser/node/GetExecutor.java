@@ -50,7 +50,7 @@ public class GetExecutor extends AbstractExecutor
      * @since 1.5
      */
     public GetExecutor(final Log log, final Introspector introspector,
-            final Class clazz, final String property)
+            final Class<?> clazz, final String property)
     {
         this.log = log;
         this.introspector = introspector;
@@ -72,7 +72,7 @@ public class GetExecutor extends AbstractExecutor
     /**
      * @since 1.5
      */
-    protected void discover(final Class clazz)
+    protected void discover(final Class<?> clazz)
     {
         try
         {

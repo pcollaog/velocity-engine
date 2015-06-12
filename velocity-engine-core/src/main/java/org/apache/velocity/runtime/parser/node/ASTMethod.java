@@ -147,7 +147,7 @@ public class ASTMethod extends SimpleNode
            * sadly, we do need recalc the values of the args, as this can
            * change from visit to visit
            */
-        final Class[] paramClasses =
+        final Class<?>[] paramClasses =
             paramCount > 0 ? new Class[paramCount] : EMPTY_CLASS_ARRAY;
 
         for (int j = 0; j < paramCount; j++)
@@ -281,9 +281,9 @@ public class ASTMethod extends SimpleNode
     public static class MethodCacheKey
     {
         private final String methodName;
-        private final Class[] params;
+        private final Class<?>[] params;
 
-        public MethodCacheKey(String methodName, Class[] params)
+        public MethodCacheKey(String methodName, Class<?>[] params)
         {
             /**
              * Should never be initialized with nulls, but to be safe we refuse
@@ -342,7 +342,7 @@ public class ASTMethod extends SimpleNode
              */
             for (int i = 0; i < params.length; ++i)
             {
-                final Class param = params[i];
+                final Class<?> param = params[i];
                 if (param != null)
                 {
                     result = result * 37 + param.hashCode();

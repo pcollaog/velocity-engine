@@ -233,7 +233,7 @@ public class ASTStringLiteral extends SimpleNode
         }
 
         StringBuilder result = new StringBuilder(s.length());
-        char prev = ' ';
+
         for(int i = 0, is = s.length(); i < is; i++)
         {
             char c = s.charAt(i);
