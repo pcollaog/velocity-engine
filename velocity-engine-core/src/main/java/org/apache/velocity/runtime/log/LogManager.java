@@ -21,7 +21,6 @@ package org.apache.velocity.runtime.log;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Iterator;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.RuntimeConstants;
@@ -104,7 +103,7 @@ public class LogManager
          * ServletLogChute, and the JdkLogChute for
          * convenience - so we use whichever we works first.
          */
-        List classes = new ArrayList();
+        List<String> classes = new ArrayList<String>();
         Object obj = rsvc.getProperty( RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS );
 
         /*
@@ -116,7 +115,7 @@ public class LogManager
         }
         else if ( obj instanceof String)
         {
-            classes.add( obj );
+            classes.add( obj.toString() );
         }
 
         /*
@@ -124,9 +123,8 @@ public class LogManager
          *  fail with a class not found, as we do this to also
          *  search out a default simple file logger
          */
-        for( Iterator ii = classes.iterator(); ii.hasNext(); )
-        {
-            String claz = (String) ii.next();
+        for (String claz : classes)
+		{
             if (claz != null && claz.length() > 0 )
             {
                 log.debug("Trying to use logger class " + claz );
@@ -185,7 +183,8 @@ public class LogManager
                     throw new VelocityException(msg,e);
                 }
             }
-        }
+		}
+        
 
         /* If the above failed, that means either the user specified a
          * logging class that we can't find, there weren't the necessary

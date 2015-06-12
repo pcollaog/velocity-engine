@@ -131,15 +131,14 @@ public class ASTIntegerRange extends SimpleNode
          * Fill the range with the appropriate values.
          */
 
-        List elements = new ArrayList(nbrElements);
+        List<Integer> elements = new ArrayList<Integer>(nbrElements);
         int value = l;
 
         for (int i = 0; i < nbrElements; i++)
-        {
-            // TODO: JDK 1.4+ -> valueOf()
-            elements.add(new Integer(value));
-            value += delta;
-        }
+		{
+			elements.add(Integer.valueOf(value));
+			value += delta;
+		}
 
         return elements;
     }

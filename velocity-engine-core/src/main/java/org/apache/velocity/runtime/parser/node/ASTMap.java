@@ -69,7 +69,7 @@ public class ASTMap extends SimpleNode
     {
         int size = jjtGetNumChildren();
 
-        Map objectMap = new LinkedHashMap();
+        Map<Object, Object> objectMap = new LinkedHashMap<Object, Object>();
 
         for (int i = 0; i < size; i += 2)
         {
