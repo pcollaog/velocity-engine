@@ -23,6 +23,7 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.apache.velocity.Template;
 
 /**
@@ -31,10 +32,10 @@ import org.apache.velocity.Template;
  * @author Nathan Bubna
  * @version $Id$
  */
-public class Scope extends AbstractMap
+public class Scope extends AbstractMap<Object,Object>
 {
     private static final String setReturnValue = "";
-    private Map storage;
+    private Map<Object, Object> storage;
     private Object replaced;
     private Scope parent;
     private Info info;
@@ -56,16 +57,16 @@ public class Scope extends AbstractMap
         }
     }
 
-    private Map getStorage()
+    private Map<Object, Object> getStorage()
     {
         if (storage == null)
         {
-            storage = new HashMap();
+            storage = new HashMap<Object, Object>();
         }
         return storage;
     }
 
-    public Set entrySet()
+    public Set<Entry<Object,Object>> entrySet()
     {
         return getStorage().entrySet();
     }
