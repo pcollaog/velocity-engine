@@ -24,7 +24,6 @@ import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.velocity.app.event.EventHandlerUtil;
-import org.apache.velocity.context.Context;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.TemplateInitException;
@@ -555,7 +554,7 @@ public class ASTReference extends SimpleNode
     /**
      * Utility class to handle nulls when printing a class type
      */
-    public static String printClass(Class clazz)
+    public static String printClass(Class<?> clazz)
     {
       return clazz == null ? "null" : clazz.getName();
     }
@@ -635,7 +634,7 @@ public class ASTReference extends SimpleNode
             // If negative, turn -1 into (size - 1)
             argument = ASTIndex.adjMinusIndexArg(argument, result, context, astIndex);            
             Object [] params = {argument, value};
-            Class[] paramClasses = {params[0] == null ? null : params[0].getClass(), 
+            Class<?>[] paramClasses = {params[0] == null ? null : params[0].getClass(), 
                                     params[1] == null ? null : params[1].getClass()};
 
             String methodName = "set";
