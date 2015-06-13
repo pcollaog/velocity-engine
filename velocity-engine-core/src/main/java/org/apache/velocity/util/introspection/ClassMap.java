@@ -126,7 +126,7 @@ public class ClassMap
 	// hit the public elements sooner or later because we reflect all the public elements anyway.
 	//
         // Ah, the miracles of Java for(;;) ...
-        for (Class classToReflect = getCachedClass(); classToReflect != null ; classToReflect = classToReflect.getSuperclass())
+        for (Class<?> classToReflect = getCachedClass(); classToReflect != null ; classToReflect = classToReflect.getSuperclass())
         {
             if (Modifier.isPublic(classToReflect.getModifiers()))
             {
@@ -143,7 +143,7 @@ public class ClassMap
     }
 
     /* recurses up interface heirarchy to get all super interfaces (VELOCITY-689) */
-    private void populateMethodCacheWithInterface(MethodCache methodCache, Class iface)
+    private void populateMethodCacheWithInterface(MethodCache methodCache, Class<?> iface)
     {
         if (Modifier.isPublic(iface.getModifiers()))
         {
@@ -156,7 +156,7 @@ public class ClassMap
 		}
     }
 
-    private void populateMethodCacheWith(MethodCache methodCache, Class classToReflect)
+    private void populateMethodCacheWith(MethodCache methodCache, Class<?> classToReflect)
     {
         if (debugReflection && log.isDebugEnabled())
         {

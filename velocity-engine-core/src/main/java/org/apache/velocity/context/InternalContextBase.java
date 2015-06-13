@@ -46,11 +46,6 @@ import org.apache.velocity.util.introspection.IntrospectionCacheData;
 class InternalContextBase implements InternalHousekeepingContext, InternalEventContext
 {
     /**
-     * Version Id for serializable
-     */
-    private static final long serialVersionUID = -245905472770843470L;
-
-    /**
      *  cache for node/context specific introspection information
      */
     private Map<Object, IntrospectionCacheData> introspectionCache = new HashMap<Object, IntrospectionCacheData>(33);

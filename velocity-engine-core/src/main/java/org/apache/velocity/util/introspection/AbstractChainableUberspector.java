@@ -50,7 +50,6 @@ public abstract class AbstractChainableUberspector extends UberspectImpl impleme
      * 
      * @see org.apache.velocity.util.introspection.Uberspect#init()
      */
-    //@Override
     public void init()
     {
         if (this.inner != null) {
@@ -75,7 +74,6 @@ public abstract class AbstractChainableUberspector extends UberspectImpl impleme
      * @see org.apache.velocity.util.introspection.Uberspect#getMethod(java.lang.Object, java.lang.String,
      *      java.lang.Object[], org.apache.velocity.util.introspection.Info)
      */
-    //@Override
     public VelMethod getMethod(Object obj, String methodName, Object[] args, Info i)
     {
         return (this.inner != null) ? this.inner.getMethod(obj, methodName, args, i) : null;
@@ -87,7 +85,6 @@ public abstract class AbstractChainableUberspector extends UberspectImpl impleme
      * @see org.apache.velocity.util.introspection.Uberspect#getPropertyGet(java.lang.Object, java.lang.String,
      *      org.apache.velocity.util.introspection.Info)
      */
-    //@Override
     public VelPropertyGet getPropertyGet(Object obj, String identifier, Info i)
     {
         return (this.inner != null) ? this.inner.getPropertyGet(obj, identifier, i) : null;
@@ -99,7 +96,6 @@ public abstract class AbstractChainableUberspector extends UberspectImpl impleme
      * @see org.apache.velocity.util.introspection.Uberspect#getPropertySet(java.lang.Object, java.lang.String,
      *      java.lang.Object, org.apache.velocity.util.introspection.Info)
      */
-    //@Override
     public VelPropertySet getPropertySet(Object obj, String identifier, Object arg, Info i)
     {
         return (this.inner != null) ? this.inner.getPropertySet(obj, identifier, arg, i) : null;

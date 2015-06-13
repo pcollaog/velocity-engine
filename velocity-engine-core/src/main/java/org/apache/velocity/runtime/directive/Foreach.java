@@ -164,9 +164,9 @@ public class Foreach extends Directive
     /**
      * Retrieve the contextual iterator.
      */
-    protected Iterator getIterator(InternalContextAdapter context, Node node)
+    protected Iterator<Object> getIterator(InternalContextAdapter context, Node node)
     {
-        Iterator i = null;
+        Iterator<Object> i = null;
         /*
          * do our introspection to see what our collection is
          */
@@ -215,7 +215,7 @@ public class Foreach extends Directive
     public boolean render(InternalContextAdapter context, Writer writer, Node node)
         throws IOException
     {
-        Iterator i = getIterator(context, node.jjtGetChild(2));
+        Iterator<Object> i = getIterator(context, node.jjtGetChild(2));
         if (i == null)
         {
             return false;

@@ -55,7 +55,6 @@ public class LinkingUberspector extends AbstractChainableUberspector
      * 
      * @see org.apache.velocity.util.introspection.Uberspect#init()
      */
-    //@Override
     public void init()
     {
         leftUberspect.init();
@@ -68,11 +67,9 @@ public class LinkingUberspector extends AbstractChainableUberspector
      * @see org.apache.velocity.util.introspection.Uberspect#getIterator(java.lang.Object,
      *      org.apache.velocity.util.introspection.Info)
      */
-    //@SuppressWarnings("unchecked")
-    //@Override
-    public Iterator getIterator(Object obj, Info i)
+    public Iterator<Object> getIterator(Object obj, Info i)
     {
-        Iterator it = leftUberspect.getIterator(obj,i);
+        Iterator<Object> it = leftUberspect.getIterator(obj,i);
         return it != null ? it : rightUberspect.getIterator(obj,i);
     }
 
@@ -82,7 +79,6 @@ public class LinkingUberspector extends AbstractChainableUberspector
      * @see org.apache.velocity.util.introspection.Uberspect#getMethod(java.lang.Object, java.lang.String,
      *      java.lang.Object[], org.apache.velocity.util.introspection.Info)
      */
-    //@Override
     public VelMethod getMethod(Object obj, String methodName, Object[] args, Info i)
     {
         VelMethod method = leftUberspect.getMethod(obj,methodName,args,i);
@@ -95,7 +91,6 @@ public class LinkingUberspector extends AbstractChainableUberspector
      * @see org.apache.velocity.util.introspection.Uberspect#getPropertyGet(java.lang.Object, java.lang.String,
      *      org.apache.velocity.util.introspection.Info)
      */
-    //@Override
     public VelPropertyGet getPropertyGet(Object obj, String identifier, Info i)
     {
         VelPropertyGet getter = leftUberspect.getPropertyGet(obj,identifier,i);
@@ -108,7 +103,6 @@ public class LinkingUberspector extends AbstractChainableUberspector
      * @see org.apache.velocity.util.introspection.Uberspect#getPropertySet(java.lang.Object, java.lang.String,
      *      java.lang.Object, org.apache.velocity.util.introspection.Info)
      */
-    //@Override
     public VelPropertySet getPropertySet(Object obj, String identifier, Object arg, Info i)
     {
         VelPropertySet setter = leftUberspect.getPropertySet(obj,identifier,arg,i);
