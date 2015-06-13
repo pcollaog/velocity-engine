@@ -25,6 +25,8 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.velocity.exception.ResourceNotFoundException;
@@ -42,7 +44,7 @@ import org.apache.commons.lang3.StringUtils;
 public class URLResourceLoader extends ResourceLoader
 {
     private String[] roots = null;
-    protected HashMap templateRoots = null;
+    protected Map<String, String> templateRoots = null;
     private int timeout = -1;
     private Method[] timeoutMethods;
 
@@ -67,7 +69,7 @@ public class URLResourceLoader extends ResourceLoader
         {
             try
             {
-                Class[] types = new Class[] { Integer.TYPE };
+                Class<?>[] types = new Class[] { Integer.TYPE };
                 Method conn = URLConnection.class.getMethod("setConnectTimeout", types);
                 Method read = URLConnection.class.getMethod("setReadTimeout", types);
                 timeoutMethods = new Method[] { conn, read };
@@ -81,7 +83,7 @@ public class URLResourceLoader extends ResourceLoader
         }
 
         // init the template paths map
-        templateRoots = new HashMap();
+        templateRoots = new HashMap<String, String>();
 
         log.trace("URLResourceLoader : initialization complete.");
     }
@@ -182,7 +184,7 @@ public class URLResourceLoader extends ResourceLoader
     {
         // get the previously used root
         String name = resource.getName();
-        String root = (String)templateRoots.get(name);
+        String root = templateRoots.get(name);
 
         try
         {

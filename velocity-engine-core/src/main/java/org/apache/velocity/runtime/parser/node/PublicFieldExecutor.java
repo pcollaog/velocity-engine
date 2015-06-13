@@ -47,7 +47,7 @@ public class PublicFieldExecutor extends AbstractExecutor
      * @since 1.5
      */
     public PublicFieldExecutor(final Log log, final Introspector introspector,
-            final Class clazz, final String property)
+            final Class<?> clazz, final String property)
     {
         this.log = log;
         this.introspector = introspector;
@@ -94,7 +94,7 @@ public class PublicFieldExecutor extends AbstractExecutor
      * @param clazz
      * @param property
      */
-    protected void discover(final Class clazz, final String property)
+    protected void discover(final Class<?> clazz, final String property)
     {
         try
         {

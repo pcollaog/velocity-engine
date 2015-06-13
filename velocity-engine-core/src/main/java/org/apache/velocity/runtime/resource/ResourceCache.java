@@ -76,5 +76,5 @@ public interface ResourceCache
      *  returns an Iterator of Keys in the cache.
      * @return An Iterator of Keys in the cache.
      */
-     public Iterator enumerateKeys();
+     public Iterator<Object> enumerateKeys();
 }

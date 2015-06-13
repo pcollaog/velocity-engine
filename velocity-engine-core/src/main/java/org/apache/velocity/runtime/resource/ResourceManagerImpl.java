@@ -64,7 +64,7 @@ public class ResourceManagerImpl
     protected ResourceCache globalCache = null;
 
     /** The List of templateLoaders that the Runtime will use to locate the InputStream source of a template. */
-    protected final List resourceLoaders = new ArrayList();
+    protected final List<ResourceLoader> resourceLoaders = new ArrayList<ResourceLoader>();
 
     /**
      * This is a list of the template input stream source initializers, basically properties for a particular template stream
@@ -72,7 +72,7 @@ public class ResourceManagerImpl
      *
      * <p>&lt;loader-id&gt;.resource.loader.&lt;property&gt; = &lt;value&gt;</p>
      */
-    private final List sourceInitializerList = new ArrayList();
+    private final List<ExtendedProperties> sourceInitializerList = new ArrayList<ExtendedProperties>();
 
     /**
      * Has this Manager been initialized?
@@ -110,13 +110,13 @@ public class ResourceManagerImpl
 
         assembleResourceLoaderInitializers();
 
-        for (Iterator it = sourceInitializerList.iterator(); it.hasNext();)
+        for (Iterator<ExtendedProperties> it = sourceInitializerList.iterator(); it.hasNext();)
         {
             /**
              * Resource loader can be loaded either via class name or be passed
              * in as an instance.
              */
-            ExtendedProperties configuration = (ExtendedProperties) it.next();
+            ExtendedProperties configuration = it.next();
 
             String loaderClass = StringUtils.nullTrim(configuration.getString("class"));
             ResourceLoader loaderInstance = (ResourceLoader) configuration.get("instance");
@@ -212,10 +212,10 @@ public class ResourceManagerImpl
      */
     private void assembleResourceLoaderInitializers()
     {
-        Vector resourceLoaderNames = rsvc.getConfiguration().getVector(RuntimeConstants.RESOURCE_LOADER);
+        Vector<String> resourceLoaderNames = rsvc.getConfiguration().getVector(RuntimeConstants.RESOURCE_LOADER);
         StringUtils.trimStrings(resourceLoaderNames);
 
-        for (Iterator it = resourceLoaderNames.iterator(); it.hasNext(); )
+        for (Iterator<String> it = resourceLoaderNames.iterator(); it.hasNext(); )
         {
 
             /*
@@ -226,7 +226,7 @@ public class ResourceManagerImpl
              * The loader id is the prefix used for all properties
              * pertaining to a particular loader.
              */
-            String loaderName = (String) it.next();
+            String loaderName = it.next();
             StringBuffer loaderID = new StringBuffer(loaderName);
             loaderID.append(".").append(RuntimeConstants.RESOURCE_LOADER);
 
@@ -421,9 +421,9 @@ public class ResourceManagerImpl
 
         long howOldItWas = 0;
 
-        for (Iterator it = resourceLoaders.iterator(); it.hasNext();)
+        for (Iterator<ResourceLoader> it = resourceLoaders.iterator(); it.hasNext();)
         {
-            ResourceLoader resourceLoader = (ResourceLoader) it.next();
+            ResourceLoader resourceLoader = it.next();
             resource.setResourceLoader(resourceLoader);
 
             /*
@@ -596,9 +596,9 @@ public class ResourceManagerImpl
      */
     private ResourceLoader getLoaderForResource(String resourceName)
     {
-        for (Iterator i = resourceLoaders.iterator(); i.hasNext(); )
+        for (Iterator<ResourceLoader> i = resourceLoaders.iterator(); i.hasNext(); )
         {
-            ResourceLoader loader = (ResourceLoader)i.next();
+            ResourceLoader loader = i.next();
             if (loader.resourceExists(resourceName))
             {
                 return loader;

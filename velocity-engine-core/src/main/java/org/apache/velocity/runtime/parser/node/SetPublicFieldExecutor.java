@@ -52,7 +52,7 @@ public class SetPublicFieldExecutor
      * @param arg
      */
     public SetPublicFieldExecutor(final Log log, final Introspector introspector,
-            final Class clazz, final String property, final Object arg)
+            final Class<?> clazz, final String property, final Object arg)
     {
         this.log = log;
         this.introspector = introspector;
@@ -99,7 +99,7 @@ public class SetPublicFieldExecutor
      * @param property
      * @param arg
      */
-    protected void discover(final Class clazz, final String property, final Object arg)
+    protected void discover(final Class<?> clazz, final String property, final Object arg)
     {
         try
         {

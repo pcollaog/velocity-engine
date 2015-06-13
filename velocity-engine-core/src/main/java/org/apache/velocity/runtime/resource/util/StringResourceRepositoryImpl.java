@@ -38,7 +38,7 @@ public class StringResourceRepositoryImpl implements StringResourceRepository
     /**
      * mem store
      */
-    protected Map resources = Collections.synchronizedMap(new HashMap());
+    protected Map<String, StringResource> resources = Collections.synchronizedMap(new HashMap<String, StringResource>());
 
     /**
      * Current Repository encoding.
@@ -50,7 +50,7 @@ public class StringResourceRepositoryImpl implements StringResourceRepository
      */
     public StringResource getStringResource(final String name)
     {
-        return (StringResource)resources.get(name);
+        return resources.get(name);
     }
 
     /**

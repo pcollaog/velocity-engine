@@ -150,8 +150,8 @@ public class StringResourceLoader extends ResourceLoader
     public static final String REPOSITORY_ENCODING_DEFAULT = "UTF-8";
 
 
-    protected static final Map STATIC_REPOSITORIES =
-        Collections.synchronizedMap(new HashMap());
+    protected static final Map<String, StringResourceRepository> STATIC_REPOSITORIES =
+        Collections.synchronizedMap(new HashMap<String, StringResourceRepository>());
 
     /**
      * Returns a reference to the default static repository.
@@ -168,7 +168,7 @@ public class StringResourceLoader extends ResourceLoader
      */
     public static StringResourceRepository getRepository(String name)
     {
-        return (StringResourceRepository)STATIC_REPOSITORIES.get(name);
+        return STATIC_REPOSITORIES.get(name);
     }
 
     /**
@@ -188,7 +188,7 @@ public class StringResourceLoader extends ResourceLoader
      */
     public static StringResourceRepository removeRepository(String name)
     {
-        return (StringResourceRepository)STATIC_REPOSITORIES.remove(name);
+        return STATIC_REPOSITORIES.remove(name);
     }
 
     /**

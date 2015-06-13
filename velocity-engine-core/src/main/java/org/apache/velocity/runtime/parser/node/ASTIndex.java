@@ -82,7 +82,7 @@ public class ASTIndex extends SimpleNode
 
     
     private final static Object[] noParams = {};
-    private final static Class[] noTypes = {};      
+    private final static Class<?>[] noTypes = {};      
     /**
      * If argument is an Integer and negative, then return (o.size() - argument). 
      * Otherwise return the original argument.  We use this to calculate the true
@@ -147,7 +147,7 @@ public class ASTIndex extends SimpleNode
         // If negative, turn -1 into size - 1
         argument = adjMinusIndexArg(argument, o, context, this);
         Object [] params = {argument};
-        Class[] paramClasses = {argument == null ? null : argument.getClass()};
+        Class<?>[] paramClasses = {argument == null ? null : argument.getClass()};
 
         VelMethod method = ClassUtils.getMethod(methodName, params, paramClasses, 
                                                 o, context, this, strictRef);
