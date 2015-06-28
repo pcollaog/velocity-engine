@@ -19,6 +19,8 @@ package org.apache.velocity.runtime;
  * under the License.
  */
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.velocity.runtime.directive.Directive;
@@ -178,52 +179,49 @@ public class VelocimacroFactory
                      macroLibVec.add(libfiles.toString());
                  }
 
-                 for(int i = 0, is = macroLibVec.size(); i < is; i++)
-                 {
-                     String lib = macroLibVec.get(i);
+				for (String lib : macroLibVec)
+				{
+					/*
+					 * only if it's a non-empty string do we bother
+					 */
+					if (isNotEmpty(lib))
+					{
+						/*
+						 * let the VMManager know that the following is coming
+						 * from libraries - need to know for auto-load
+						 */
 
-                     /*
-                      * only if it's a non-empty string do we bother
-                      */
+						vmManager.setRegisterFromLib(true);
 
-                     if (StringUtils.isNotEmpty(lib))
-                     {
-                         /*
-                          *  let the VMManager know that the following is coming
-                          *  from libraries - need to know for auto-load
-                          */
+						log.debug("adding VMs from VM library : " + lib);
 
-                         vmManager.setRegisterFromLib(true);
+						try
+						{
+							Template template = rsvc.getTemplate(lib);
 
-                         log.debug("adding VMs from VM library : " + lib);
+							/*
+							 * save the template. This depends on the assumption
+							 * that the Template object won't change - currently
+							 * this is how the Resource manager works
+							 */
 
-                         try
-                         {
-                             Template template = rsvc.getTemplate(lib);
+							Twonk twonk = new Twonk();
+							twonk.template = template;
+							twonk.modificationTime = template.getLastModified();
+							libModMap.put(lib, twonk);
+						} catch (Exception e)
+						{
+							String msg = "Velocimacro : Error using VM library : "
+									+ lib;
+							log.error(true, msg, e);
+							throw new VelocityException(msg, e);
+						}
 
-                             /*
-                              *  save the template.  This depends on the assumption
-                              *  that the Template object won't change - currently
-                              *  this is how the Resource manager works
-                              */
+						log.trace("VM library registration complete.");
 
-                             Twonk twonk = new Twonk();
-                             twonk.template = template;
-                             twonk.modificationTime = template.getLastModified();
-                             libModMap.put(lib, twonk);
-                         }
-                         catch (Exception e)
-                         {
-                             String msg = "Velocimacro : Error using VM library : " + lib;
-                             log.error(true, msg, e);
-                             throw new VelocityException(msg, e);
-                         }
-
-                         log.trace("VM library registration complete.");
-
-                         vmManager.setRegisterFromLib(false);
-                     }
-                 }
+						vmManager.setRegisterFromLib(false);
+					}
+				}
              }
 
             /*
