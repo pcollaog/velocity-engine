@@ -24,9 +24,6 @@ import java.util.Properties;
 
 import junit.framework.TestSuite;
 
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.test.misc.TestLogChute;
-
 /**
  * Test suite for Templates.
  *
